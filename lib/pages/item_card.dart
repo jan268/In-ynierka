@@ -1,9 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:net_market/objects/item.dart';
-import 'package:http/http.dart' as http;
+import 'package:net_market/objects/item_card_object.dart';
+import 'package:net_market/objects/item_object.dart';
 
 class ItemCard extends StatefulWidget {
   const ItemCard({Key? key}) : super(key: key);
@@ -13,21 +11,18 @@ class ItemCard extends StatefulWidget {
 }
 
 class _ItemCardState extends State<ItemCard> {
-  fetchData(String id) async {
-    var response =
-        await http.get(Uri.parse('http://localhost:5005/api/items/$id'));
-    var jsonData = jsonDecode(response.body);
-    return Item(
-        jsonData["Id"],
-        jsonData["Name"],
-        jsonData["Category"],
-        jsonData["Model"],
-        jsonData["Gender"],
-        jsonData["RetailPrice"],
-        jsonData["Description"],
-        jsonData["ImageUrl"],
-        jsonData["SmallImageUrl"],
-        jsonData["ThumbImageUrl"]);
+
+  late ItemCardObject itemCardObject = ItemCardObject.item(ItemObject.item("f3f899b0-6571-4f75-9207-f61190e17794", "name", "category", "model", "gender", 2.0, "description", "imageUrl", "smallImageUrl", "thumbUrl"));
+
+  void getData() async {
+    itemCardObject.getData("f3f899b0-6571-4f75-9207-f61190e17794");
+    print(itemCardObject.item!.retailPrice);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
   }
 
   @override
@@ -73,7 +68,7 @@ class _ItemCardState extends State<ItemCard> {
                                     SizedBox(
                                         width: 40,
                                         child: Text(
-                                            "Price")), // tu trzeba dac cene Lowest ASK
+                                            "${itemCardObject.item!.retailPrice}")), // tu trzeba dac cene Lowest ASK
                                     SizedBox(
                                       width: 40,
                                         child: Text("Buy", style: TextStyle(fontSize: 20),)
@@ -126,6 +121,7 @@ class _ItemCardState extends State<ItemCard> {
               SizedBox(
                 height: 400,
                 child: Image.asset("assets/photos/j1.jpg"),
+                // child: Image.network(item.thumbUrl)
               ),
               SizedBox(
                 height: 100,

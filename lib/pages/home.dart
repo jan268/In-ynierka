@@ -13,7 +13,7 @@ class _HomeState extends State<Home> {
   get categories => MockedLists().categories;
   get brands => MockedLists().brands;
   get items => MockedLists().items;
-
+  // get items => HomeService().fetchData("CLOTHES");
 
   @override
   Widget build(BuildContext context) {

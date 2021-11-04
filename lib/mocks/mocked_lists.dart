@@ -14,21 +14,14 @@ class MockedLists {
     TextButton(
       onPressed: () {},
       child: Text(
-        'STREETWEAR',
+        'CLOTHES',
         style: TextStyle(color: Colors.black),
       ),
     ),
     TextButton(
       onPressed: () {},
       child: Text(
-        'COLLECTIBLES',
-        style: TextStyle(color: Colors.black),
-      ),
-    ),
-    TextButton(
-      onPressed: () {},
-      child: Text(
-        'WATCHES',
+        'ACCESSORIES',
         style: TextStyle(color: Colors.black),
       ),
     ),
