@@ -19,19 +19,17 @@ class ItemCardObject {
   ItemCardObject.name(
       this.item, this.lowestAsk, this.asks, this.highestBid, this.bids);
 
-  Future<ItemCardObject> getData(String id) async {
+  static Future<ItemCardObject> getData(String id) async {
       // make request
       Response response = await get(Uri.parse("http://10.0.2.2:5005/api/items/${id}"));
       var data = jsonDecode(response.body);
 
-      return data.map<ItemCardObject>((json) => ItemCardObject.fromJson(json));
-
-      // item!.mapFromJson(data);
+      return ItemCardObject.fromJson(data);
   }
 
   factory ItemCardObject.fromJson(Map<String, dynamic> json) {
     return ItemCardObject(
-        item: ItemObject.fromJson(json["item"])
+        item: ItemObject.fromJson(json["item"]),
     );
   }
 

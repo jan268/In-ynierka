@@ -7,6 +7,7 @@ import 'package:net_market/pages/login_screen.dart';
 
 void main() {
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     initialRoute: "/item_card",
     routes: {
       '/' : (context) => Loading(),

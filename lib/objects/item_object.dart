@@ -1,4 +1,8 @@
 
+import 'dart:convert';
+
+import 'package:http/http.dart';
+
 import 'brand_object.dart';
 
 class ItemObject {
@@ -51,6 +55,17 @@ class ItemObject {
       this.smallImageUrl,
       this.thumbUrl,
       this.brand);
+
+  static Future<List<ItemObject>> getItemsFromCategory(String category) async {
+    // make request
+    List<ItemObject> items;
+    Response response = await get(Uri.parse("http://10.0.2.2:5005/api/items/${category}"));
+    var data = jsonDecode(response.body);
+    var list = data["items"] as List;
+    items = list.map<ItemObject>((json) => ItemObject.fromJson(json)).toList();
+
+    return items;
+  }
 
   factory ItemObject.fromJson(Map<String, dynamic> json) {
     return ItemObject(

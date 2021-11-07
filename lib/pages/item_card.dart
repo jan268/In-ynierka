@@ -15,8 +15,10 @@ class _ItemCardState extends State<ItemCard> {
   late ItemCardObject itemCardObject = ItemCardObject.item(ItemObject.item("f3f899b0-6571-4f75-9207-f61190e17794", "name", "category", "model", "gender", 2.0, "description", "imageUrl", "smallImageUrl", "thumbUrl"));
 
   void getData() async {
-    itemCardObject.getData("f3f899b0-6571-4f75-9207-f61190e17794");
-    print(itemCardObject.item!.retailPrice);
+    var item = await ItemCardObject.getData("f3f899b0-6571-4f75-9207-f61190e17794");
+    setState(() {
+      itemCardObject = item;
+    });
   }
 
   @override
