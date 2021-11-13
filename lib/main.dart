@@ -8,13 +8,13 @@ import 'package:net_market/pages/login_screen.dart';
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    initialRoute: "/item_card",
+    initialRoute: "/home",
     routes: {
       '/' : (context) => Loading(),
       '/home' : (context) => Home(),
       '/login_screen' : (context) => LoginScreen(),
       '/buy_item' : (context) => BuyItem(),
-      '/item_card' : (context) => ItemCard(),
+      '/item_card' : (context) => ItemCard(id: '',),
     },
   ));
 }

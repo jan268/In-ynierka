@@ -4,7 +4,8 @@ import 'package:net_market/objects/item_card_object.dart';
 import 'package:net_market/objects/item_object.dart';
 
 class ItemCard extends StatefulWidget {
-  const ItemCard({Key? key}) : super(key: key);
+  final String id;
+  const ItemCard({Key? key, required this.id}) : super(key: key);
 
   @override
   _ItemCardState createState() => _ItemCardState();
@@ -12,10 +13,10 @@ class ItemCard extends StatefulWidget {
 
 class _ItemCardState extends State<ItemCard> {
 
-  late ItemCardObject itemCardObject = ItemCardObject.item(ItemObject.item("f3f899b0-6571-4f75-9207-f61190e17794", "name", "category", "model", "gender", 2.0, "description", "imageUrl", "smallImageUrl", "thumbUrl"));
+  late ItemCardObject itemCardObject = ItemCardObject.item(ItemObject.item("f3f899b0-6571-4f75-9207-f61190e17794", "name", "category", "model", "gender", 2.0, "description", "imageUrl", "smallImageUrl", "https://images.stockx.com/images/adidas-Ivy-Park-Knit-Logo-Dress-Dark-Green-Green-Tint-Yellow-Tint.jpg?fit=fill&bg=FFFFFF&w=480&h=320&auto=compress&q=90&dpr=1&trim=color&updated_at=1619146048&pad=0&fm=webp"));
 
-  void getData() async {
-    var item = await ItemCardObject.getData("f3f899b0-6571-4f75-9207-f61190e17794");
+  void getData(String id) async {
+    var item = await ItemCardObject.getData(id);
     setState(() {
       itemCardObject = item;
     });
@@ -24,7 +25,7 @@ class _ItemCardState extends State<ItemCard> {
   @override
   void initState() {
     super.initState();
-    getData();
+    getData(widget.id);
   }
 
   @override
@@ -70,7 +71,7 @@ class _ItemCardState extends State<ItemCard> {
                                     SizedBox(
                                         width: 40,
                                         child: Text(
-                                            "${itemCardObject.item!.retailPrice}")), // tu trzeba dac cene Lowest ASK
+                                            getLowestAsk(itemCardObject))),
                                     SizedBox(
                                       width: 40,
                                         child: Text("Buy", style: TextStyle(fontSize: 20),)
@@ -101,7 +102,7 @@ class _ItemCardState extends State<ItemCard> {
                                 children: [
                                   SizedBox(
                                       child: Text(
-                                          "Price")
+                                          getHighestBid(itemCardObject))
                                   ), // tu trzeba dac cene Lowest ASK
                                   SizedBox(
                                       child: Text("Sell", style: TextStyle(fontSize: 20),)
@@ -122,13 +123,12 @@ class _ItemCardState extends State<ItemCard> {
               Divider(),
               SizedBox(
                 height: 400,
-                child: Image.asset("assets/photos/j1.jpg"),
-                // child: Image.network(item.thumbUrl)
+                child: Image.network(itemCardObject.item!.thumbUrl as String)
               ),
               SizedBox(
                 height: 100,
                 child: Text(
-                    "Jordan 1",
+                    itemCardObject.item!.name as String,
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold
@@ -140,5 +140,19 @@ class _ItemCardState extends State<ItemCard> {
         ),
       ),
     );
+  }
+
+  String getHighestBid(ItemCardObject item) {
+    if (item.highestBid == null) {
+      return "-";
+    }
+    return item.highestBid as String;
+  }
+
+  String getLowestAsk(ItemCardObject item) {
+    if (item.lowestAsk == null) {
+      return "-";
+    }
+    return item.lowestAsk as String;
   }
 }

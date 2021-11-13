@@ -18,6 +18,8 @@ class ItemObject {
   String? smallImageUrl;
   String? thumbUrl;
   BrandObject? brand;
+  String? lowestAsk;
+  String? highestBid;
 
   ItemObject({
       this.id,
@@ -29,7 +31,10 @@ class ItemObject {
       this.description,
       this.imageUrl,
       this.smallImageUrl,
-      this.thumbUrl});
+      this.thumbUrl,
+      this.lowestAsk,
+      this.highestBid
+  });
 
   ItemObject.item(
       this.id,
@@ -59,7 +64,7 @@ class ItemObject {
   static Future<List<ItemObject>> getItemsFromCategory(String category) async {
     // make request
     List<ItemObject> items;
-    Response response = await get(Uri.parse("http://10.0.2.2:5005/api/items/${category}"));
+    Response response = await get(Uri.parse("http://netmarketapi-env.eba-u5ax5fih.eu-central-1.elasticbeanstalk.com/api/Items?Category=${category}"));
     var data = jsonDecode(response.body);
     var list = data["items"] as List;
     items = list.map<ItemObject>((json) => ItemObject.fromJson(json)).toList();
@@ -78,7 +83,9 @@ class ItemObject {
         description: json["description"],
         imageUrl: json["imageUrl"],
         smallImageUrl: json["smallImageUrl"],
-        thumbUrl: json["thumbUrl"]
+        thumbUrl: json["thumbUrl"],
+        lowestAsk: json["lowestAsk"],
+        highestBid: json["highestBid"]
     );
   }
 

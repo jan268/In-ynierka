@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:net_market/mocks/mocked_lists.dart';
+import 'package:net_market/pages/item_in_list.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -92,16 +93,7 @@ class _HomeState extends State<Home> {
                   height: 250,
                   child: Container(
                     color: Colors.white,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: items.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return items.elementAt(index);
-                      },
-                    //   separatorBuilder: (BuildContext context, int index) {
-                    //   return Container(color: Colors.white ,child: SizedBox(width: 10));
-                    // },
-                    ),
+                    child: ItemInList()
                   ),
                 ),
               ],
