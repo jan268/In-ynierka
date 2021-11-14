@@ -3,7 +3,8 @@ import 'package:net_market/mocks/mocked_lists.dart';
 import 'package:net_market/pages/item_in_list.dart';
 
 class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+  final String category;
+  const Home({Key? key, required this.category}) : super(key: key);
 
   @override
   _HomeState createState() => _HomeState();
@@ -14,7 +15,6 @@ class _HomeState extends State<Home> {
   get categories => MockedLists().categories;
   get brands => MockedLists().brands;
   get items => MockedLists().items;
-  // get items => HomeService().fetchData("CLOTHES");
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,15 @@ class _HomeState extends State<Home> {
                       scrollDirection: Axis.horizontal,
                     itemCount: categories.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return categories.elementAt(index);
+                      return TextButton(
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => Home(category: categories[index],)));
+                        },
+                        child: Text(
+                          categories[index],
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      );
                     },
       ),
                   ),
@@ -93,7 +101,7 @@ class _HomeState extends State<Home> {
                   height: 250,
                   child: Container(
                     color: Colors.white,
-                    child: ItemInList()
+                    child: ItemInList(category: widget.category,)
                   ),
                 ),
               ],

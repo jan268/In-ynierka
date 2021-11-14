@@ -1,9 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:net_market/objects/item_card_object.dart';
+import 'package:net_market/objects/item_object.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 class BuyItem extends StatefulWidget {
-  const BuyItem({Key? key}) : super(key: key);
+  final ItemCardObject itemCardObject;
+  final String size;
+  const BuyItem({Key? key, required this.itemCardObject, required this.size}) : super(key: key);
 
   @override
   _BuyItemState createState() => _BuyItemState();
@@ -11,6 +15,7 @@ class BuyItem extends StatefulWidget {
 
 class _BuyItemState extends State<BuyItem> {
 
+  late ItemCardObject item = widget.itemCardObject;
   final myController = TextEditingController();
   bool buyNow = true;
 
@@ -25,7 +30,7 @@ class _BuyItemState extends State<BuyItem> {
                 Center(
                   child: SizedBox(
                     height: 200,
-                    child: Image.asset("assets/photos/j1.jpg"),
+                      child: Image.network(item.item!.thumbUrl as String)
                   ),
                 ),
                 SizedBox(
@@ -37,7 +42,7 @@ class _BuyItemState extends State<BuyItem> {
                           mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                "Highest Bid: 132 USD",
+                                "Highest Bid: ${getHighestBid(item.item!)}",
                                 style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold
@@ -49,7 +54,7 @@ class _BuyItemState extends State<BuyItem> {
                                 color: Colors.grey,
                               ),
                               Text(
-                                "Lowest Ask : 152 USD",
+                                "Lowest Ask : ${getLowestAsk(item.item!)}",
                                 style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold
@@ -60,7 +65,7 @@ class _BuyItemState extends State<BuyItem> {
                       ),
                       Center(
                         child: Text(
-                          "Europe 45",
+                          widget.size,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold
@@ -132,5 +137,21 @@ class _BuyItemState extends State<BuyItem> {
         ),
       ),
     );
+  }
+
+  String getLowestAsk(ItemObject item) {
+    if (item.lowestAsk == null) {
+      return "--";
+    }
+    String price = item.lowestAsk as String;
+    return price + "USD";
+  }
+
+  String getHighestBid(ItemObject item) {
+    if (item.highestBid == null) {
+      return "--";
+    }
+    String price =  item.highestBid as String;
+    return price + "USD";
   }
 }

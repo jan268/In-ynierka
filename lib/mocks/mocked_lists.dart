@@ -3,36 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:net_market/utilities/basic_icons_icons.dart';
 
 class MockedLists {
-  List<Widget> categories = <Widget>[
-    TextButton(
-      onPressed: () {},
-      child: Text(
-        'SNEAKERS',
-        style: TextStyle(color: Colors.black),
-      ),
-    ),
-    TextButton(
-      onPressed: () {},
-      child: Text(
-        'CLOTHES',
-        style: TextStyle(color: Colors.black),
-      ),
-    ),
-    TextButton(
-      onPressed: () {},
-      child: Text(
-        'ACCESSORIES',
-        style: TextStyle(color: Colors.black),
-      ),
-    ),
-    TextButton(
-      onPressed: () {},
-      child: Text(
-        'ELECTRONICS',
-        style: TextStyle(color: Colors.black),
-      ),
-    ),
-  ];
+
+  List<String> categories = ['SNEAKERS', 'STREETWEAR', 'COLLECTIBLES', 'ELECTRONICS'];
 
   List<Widget> brands = <Widget>[
     SizedBox(

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:net_market/objects/item_card_object.dart';
+import 'package:net_market/objects/item_object.dart';
 import 'package:net_market/pages/buy_item.dart';
 import 'package:net_market/pages/item_card.dart';
 import 'package:net_market/pages/home.dart';
@@ -11,9 +13,9 @@ void main() {
     initialRoute: "/home",
     routes: {
       '/' : (context) => Loading(),
-      '/home' : (context) => Home(),
+      '/home' : (context) => Home(category: 'Streetwear',),
       '/login_screen' : (context) => LoginScreen(),
-      '/buy_item' : (context) => BuyItem(),
+      '/buy_item' : (context) => BuyItem(itemCardObject: ItemCardObject(), size: '',),
       '/item_card' : (context) => ItemCard(id: '',),
     },
   ));

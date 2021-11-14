@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:net_market/objects/item_card_object.dart';
 import 'package:net_market/objects/item_object.dart';
+import 'package:net_market/pages/buy_item.dart';
 
 class ItemCard extends StatefulWidget {
   final String id;
@@ -13,7 +14,8 @@ class ItemCard extends StatefulWidget {
 
 class _ItemCardState extends State<ItemCard> {
 
-  late ItemCardObject itemCardObject = ItemCardObject.item(ItemObject.item("f3f899b0-6571-4f75-9207-f61190e17794", "name", "category", "model", "gender", 2.0, "description", "imageUrl", "smallImageUrl", "https://images.stockx.com/images/adidas-Ivy-Park-Knit-Logo-Dress-Dark-Green-Green-Tint-Yellow-Tint.jpg?fit=fill&bg=FFFFFF&w=480&h=320&auto=compress&q=90&dpr=1&trim=color&updated_at=1619146048&pad=0&fm=webp"));
+  String? size = "L";
+  ItemCardObject itemCardObject = ItemCardObject.item(ItemObject.item("f3f899b0-6571-4f75-9207-f61190e17794", "name", "category", "model", "gender", 2.0, "description", "imageUrl", "smallImageUrl", "https://images.stockx.com/images/adidas-Ivy-Park-Knit-Logo-Dress-Dark-Green-Green-Tint-Yellow-Tint.jpg?fit=fill&bg=FFFFFF&w=480&h=320&auto=compress&q=90&dpr=1&trim=color&updated_at=1619146048&pad=0&fm=webp"));
 
   void getData(String id) async {
     var item = await ItemCardObject.getData(id);
@@ -63,7 +65,9 @@ class _ItemCardState extends State<ItemCard> {
                               style : ButtonStyle(
                                 backgroundColor:  MaterialStateProperty.all<Color>(Colors.green),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => BuyItem(itemCardObject: itemCardObject, size: size!,)));
+                              },
                               child: Container(
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,

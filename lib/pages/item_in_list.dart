@@ -5,7 +5,8 @@ import 'package:net_market/pages/item_card.dart';
 import 'package:net_market/pages/loading.dart';
 
 class ItemInList extends StatefulWidget {
-  const ItemInList({Key? key}) : super(key: key);
+  final String category;
+  const ItemInList({Key? key, required this.category}) : super(key: key);
 
   @override
   _ItemInListState createState() => _ItemInListState();
@@ -16,7 +17,7 @@ class _ItemInListState extends State<ItemInList> {
   // late List<ItemObject> items;
 
   Future<List<ItemObject>> getData() async {
-    List<ItemObject> itemsFromCategory = await ItemObject.getItemsFromCategory("Streetwear");
+    List<ItemObject> itemsFromCategory = await ItemObject.getItemsFromCategory(widget.category);
     return itemsFromCategory;
     // setState(() {
     //   items = itemsFromCategory;
@@ -79,7 +80,7 @@ class _ItemInListState extends State<ItemInList> {
                           color: Colors.grey[100],
                           child: SizedBox(
                             width: 140,
-                            height: 200,
+                            // height: 200,
                             child: Column(
                               children: [
                                 Image.network(item.thumbUrl!),
