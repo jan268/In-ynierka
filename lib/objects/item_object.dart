@@ -64,7 +64,7 @@ class ItemObject {
   static Future<List<ItemObject>> getItemsFromCategory(String category) async {
     // make request
     List<ItemObject> items;
-    Response response = await get(Uri.parse("http://netmarketapi-env.eba-u5ax5fih.eu-central-1.elasticbeanstalk.com/api/Items?Category=${category}"));
+    Response response = await get(Uri.parse("http://netmarket-api.eu-central-1.elasticbeanstalk.com/api/Items?Category=${category}"));
     var data = jsonDecode(response.body);
     var list = data["items"] as List;
     items = list.map<ItemObject>((json) => ItemObject.fromJson(json)).toList();
