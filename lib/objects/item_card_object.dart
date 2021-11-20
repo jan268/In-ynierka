@@ -21,7 +21,7 @@ class ItemCardObject {
 
   static Future<ItemCardObject> getData(String id) async {
       // make request
-      Response response = await get(Uri.parse("http://netmarketapi-env.eba-u5ax5fih.eu-central-1.elasticbeanstalk.com/api/Items/${id}"));
+      Response response = await get(Uri.parse("http://netmarket-api.eu-central-1.elasticbeanstalk.com/api/Items/${id}"));
       var data = jsonDecode(response.body);
 
       return ItemCardObject.fromJson(data);

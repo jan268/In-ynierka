@@ -114,10 +114,10 @@ class _FilterPageState extends State<FilterPage> {
                       icon: const Icon(Icons.transgender),
                       iconSize: 24,
                       elevation: 16,
-                      style: const TextStyle(color: Colors.deepPurple),
+                      style: const TextStyle(color: Color(0xFF40C6BD)),
                       underline: Container(
                         height: 2,
-                        color: Colors.deepPurpleAccent,
+                        color: Color(0xFF40C6BD),
                       ),
                       onChanged: (String? newValue) {
                         setState(() {
@@ -156,10 +156,10 @@ class _FilterPageState extends State<FilterPage> {
                         icon: const Icon(CupertinoIcons.money_dollar),
                         iconSize: 24,
                         elevation: 16,
-                        style: const TextStyle(color: Colors.deepPurple),
+                        style: const TextStyle(color: Color(0xFF40C6BD)),
                         underline: Container(
                           height: 2,
-                          color: Colors.deepPurpleAccent,
+                          color: Color(0xFF40C6BD),
                         ),
                         onChanged: (String? newValue) {
                           setState(() {
@@ -187,7 +187,7 @@ class _FilterPageState extends State<FilterPage> {
             width: MediaQuery.of(context).size.width/2,
             child: ElevatedButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
+                backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF40C6BD)),
               ),
               onPressed: () {
                 // powrot do ekranu wyszukiwania z (przekazac dane filtrow)

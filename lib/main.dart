@@ -11,7 +11,7 @@ import 'package:net_market/pages/search.dart';
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    initialRoute: "/filters",
+    initialRoute: "/search",
     routes: {
       '/' : (context) => Loading(),
       '/home' : (context) => Home(category: 'Streetwear',),

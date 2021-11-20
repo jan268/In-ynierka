@@ -78,7 +78,7 @@ class _BuyItemState extends State<BuyItem> {
                 ToggleSwitch(
                   minWidth: 90.0,
                   cornerRadius: 20.0,
-                  activeBgColors: [[Colors.green[800]!], [Colors.green[800]!]],
+                  activeBgColors: [[Colors.green[800]!], [Colors.green[800]!]], //Color(0xFF40C6BD)
                   activeFgColor: Colors.white,
                   inactiveBgColor: Colors.grey,
                   inactiveFgColor: Colors.white,
