@@ -14,34 +14,10 @@ class ItemInList extends StatefulWidget {
 
 class _ItemInListState extends State<ItemInList> {
 
-  // late List<ItemObject> items;
-
   Future<List<ItemObject>> getData() async {
     List<ItemObject> itemsFromCategory = await ItemObject.getItemsFromCategory(widget.category);
     return itemsFromCategory;
-    // setState(() {
-    //   items = itemsFromCategory;
-    // });
   }
-
-  // Widget projectWidget() {
-  //   return FutureBuilder(
-  //     builder: (context, projectSnap) {
-  //       return ListView.builder(
-  //         itemCount: projectSnap.data.length,
-  //         itemBuilder: (context, index) {
-  //           ProjectModel project = projectSnap.data[index];
-  //           return Column(
-  //             children: <Widget>[
-  //               // Widget to display the list of project
-  //             ],
-  //           );
-  //         },
-  //       );
-  //     },
-  //     future: getProjectDetails(),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +61,7 @@ class _ItemInListState extends State<ItemInList> {
                               children: [
                                 Image.network(item.thumbUrl!),
                                 Text(
-                                  item.name!,
+                                  getName(item),
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(
@@ -125,6 +101,14 @@ class _ItemInListState extends State<ItemInList> {
           // inorder to display something on the Canvas
           future: getData(),
         );
+  }
+
+  String getName(ItemObject item) {
+    if (item.name!.length > 50) {
+      String name = item.name!.substring(0, 50);
+      return name + "...";
+    }
+    return item.name as String;
   }
 
   String getLowestAsk(ItemObject item) {

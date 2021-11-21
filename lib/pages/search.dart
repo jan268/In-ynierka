@@ -3,6 +3,7 @@ import 'package:net_market/mocks/mocked_lists.dart';
 import 'package:net_market/objects/filter_object.dart';
 import 'package:net_market/pages/filters.dart';
 import 'package:net_market/pages/item_in_list_column.dart';
+import 'package:net_market/utilities/basic_icons_icons.dart';
 
 import 'home.dart';
 
@@ -25,7 +26,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      bottomNavigationBar: bottomNavBar,
+      bottomNavigationBar: getNavBar(1),
       body: Container(
         child: SafeArea(
           child: Align(
@@ -96,5 +97,40 @@ class _SearchPageState extends State<SearchPage> {
         ),
       ),
     );
+  }
+
+  Widget getNavBar(int index) {
+    return BottomNavigationBar(
+      currentIndex: index,
+      onTap: onTabTapped,
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+            icon: Icon(
+              BasicIcons.trending_up,
+              color: Colors.tealAccent,
+            ),
+            label: 'Trending'),
+        BottomNavigationBarItem(
+            icon: Icon(
+              BasicIcons.search,
+              color: Colors.tealAccent,
+            ),
+            label: 'Search'),
+        BottomNavigationBarItem(
+            icon: Icon(
+              BasicIcons.person_outline,
+              color: Colors.tealAccent,
+            ),
+            label: 'Profile'),
+      ],
+    );
+  }
+
+  void onTabTapped(int index) {
+    switch(index){
+      case 0 : Navigator.push(context, MaterialPageRoute(builder: (context) => Home(category: 'Streetwear',))); break;
+      case 1 : break;
+      case 2 : break; // tu trzeba dodac bedzie ekran uzytkownika
+    }
   }
 }

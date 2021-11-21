@@ -12,7 +12,7 @@ import 'package:net_market/pages/search.dart';
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    initialRoute: "/search",
+    initialRoute: "/home",
     routes: {
       '/' : (context) => Loading(),
       '/home' : (context) => Home(category: 'Streetwear',),

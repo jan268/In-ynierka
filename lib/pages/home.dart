@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:net_market/mocks/mocked_lists.dart';
+import 'package:net_market/objects/filter_object.dart';
 import 'package:net_market/pages/item_in_list.dart';
+import 'package:net_market/pages/search.dart';
+import 'package:net_market/utilities/basic_icons_icons.dart';
 
 class Home extends StatefulWidget {
   final String category;
@@ -20,7 +23,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      bottomNavigationBar: bottomNavBar,
+      bottomNavigationBar: getNavBar(0),
       body: Container(
         child: SafeArea(
           child: Align(
@@ -110,5 +113,40 @@ class _HomeState extends State<Home> {
         )
       )
     );
+  }
+
+  Widget getNavBar(int index) {
+    return BottomNavigationBar(
+      currentIndex: index,
+      onTap: onTabTapped,
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+            icon: Icon(
+              BasicIcons.trending_up,
+              color: Colors.tealAccent,
+            ),
+            label: 'Trending'),
+        BottomNavigationBarItem(
+            icon: Icon(
+              BasicIcons.search,
+              color: Colors.tealAccent,
+            ),
+            label: 'Search'),
+        BottomNavigationBarItem(
+            icon: Icon(
+              BasicIcons.person_outline,
+              color: Colors.tealAccent,
+            ),
+            label: 'Profile'),
+      ],
+    );
+  }
+
+  void onTabTapped(int index) {
+    switch(index){
+      case 0 : break;
+      case 1 : Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage(category: 'Sneakers', filters: FilterObject.category("Sneakers"),))); break;
+      case 2 : break; // tu trzeba dodac bedzie ekran uzytkownika
+    }
   }
 }

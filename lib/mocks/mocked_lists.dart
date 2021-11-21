@@ -1,3 +1,4 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:net_market/utilities/basic_icons_icons.dart';
@@ -58,6 +59,41 @@ class MockedLists {
       ),
     ),
   ];
+
+  Widget getNavBar(int index) {
+    return BottomNavigationBar(
+      currentIndex: index,
+      onTap: onTabTapped,
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+            icon: Icon(
+              BasicIcons.trending_up,
+              color: Colors.tealAccent,
+            ),
+            label: 'Trending'),
+        BottomNavigationBarItem(
+            icon: Icon(
+              BasicIcons.search,
+              color: Colors.tealAccent,
+            ),
+            label: 'Search'),
+        BottomNavigationBarItem(
+            icon: Icon(
+              BasicIcons.person_outline,
+              color: Colors.tealAccent,
+            ),
+            label: 'Profile'),
+      ],
+    );
+  }
+
+  void onTabTapped(int index) {
+    switch(index){
+      case 0 : print(index); break;
+      case 1 : print(index); break;
+      case 2 : print(index); break; // tu trzeba dodac bedzie ekran uzytkownika
+    }
+  }
 
   final bottomNavBar = BottomNavigationBar(
     items: const <BottomNavigationBarItem>[
