@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:net_market/mocks/mocked_lists.dart';
 import 'package:net_market/objects/filter_object.dart';
+import 'package:net_market/pages/account.dart';
 import 'package:net_market/pages/item_in_list.dart';
 import 'package:net_market/pages/search.dart';
 import 'package:net_market/utilities/basic_icons_icons.dart';
@@ -144,7 +145,7 @@ class _HomeState extends State<Home> {
     switch(index){
       case 0 : break;
       case 1 : Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage(category: widget.category, filters: FilterObject.category(widget.category),))); break;
-      case 2 : break; // tu trzeba dodac bedzie ekran uzytkownika
+      case 2 : Navigator.push(context, MaterialPageRoute(builder: (context) => AccountPage())); break;
     }
   }
 }
