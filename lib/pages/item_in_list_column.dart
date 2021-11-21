@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:net_market/objects/filter_object.dart';
 import 'package:net_market/objects/item_object.dart';
 import 'package:net_market/pages/item_card.dart';
 import 'package:net_market/pages/loading.dart';
 
 class ItemInListColumn extends StatefulWidget {
-  final String category;
-  const ItemInListColumn({Key? key, required this.category}) : super(key: key);
+  final FilterObject filterObject;
+  const ItemInListColumn({Key? key, required this.filterObject}) : super(key: key);
 
   @override
   _ItemInListColumnState createState() => _ItemInListColumnState();
@@ -15,7 +16,7 @@ class ItemInListColumn extends StatefulWidget {
 class _ItemInListColumnState extends State<ItemInListColumn> {
 
   Future<List<ItemObject>> getData() async {
-    List<ItemObject> itemsFromCategory = await ItemObject.getItemsFromCategory(widget.category);
+    List<ItemObject> itemsFromCategory = await ItemObject.getItemsWithFilters(widget.filterObject);
     return itemsFromCategory;
   }
 

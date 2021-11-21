@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:net_market/objects/filter_object.dart';
+import 'package:net_market/pages/search.dart';
 
 class FilterPage extends StatefulWidget {
-  const FilterPage({Key? key}) : super(key: key);
+  final String category;
+  const FilterPage({Key? key, required this.category}) : super(key: key);
 
   @override
   _FilterPageState createState() => _FilterPageState();
@@ -10,11 +13,12 @@ class FilterPage extends StatefulWidget {
 
 class _FilterPageState extends State<FilterPage> {
 
-  final myController = TextEditingController();
-  final myController2 = TextEditingController();
-  final myController3 = TextEditingController();
-  String dropdownValue = "All";
+  final name = TextEditingController();
+  final make = TextEditingController();
+  final model = TextEditingController();
+  String genderValue = "All";
   String priceValue = "All prices";
+  FilterObject filters = FilterObject();
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +46,7 @@ class _FilterPageState extends State<FilterPage> {
                   SizedBox(
                     width: 150,
                     child: TextField(
-                      controller: myController,
+                      controller: name,
                     ),
                   ),
                 ],
@@ -65,7 +69,7 @@ class _FilterPageState extends State<FilterPage> {
                   SizedBox(
                     width: 150,
                     child: TextField(
-                      controller: myController2,
+                      controller: make,
                     ),
                   ),
                 ],
@@ -88,7 +92,7 @@ class _FilterPageState extends State<FilterPage> {
                   SizedBox(
                     width: 150,
                     child: TextField(
-                      controller: myController3,
+                      controller: model,
                     ),
                   ),
                 ],
@@ -110,7 +114,7 @@ class _FilterPageState extends State<FilterPage> {
                   ),
                   SizedBox(
                     child: DropdownButton<String>(
-                      value: dropdownValue,
+                      value: genderValue,
                       icon: const Icon(Icons.transgender),
                       iconSize: 24,
                       elevation: 16,
@@ -121,7 +125,7 @@ class _FilterPageState extends State<FilterPage> {
                       ),
                       onChanged: (String? newValue) {
                         setState(() {
-                          dropdownValue = newValue!;
+                          genderValue = newValue!;
                         });
                       },
                       items: <String>['All', 'Men', 'Women', 'Kids', 'Unisex']
@@ -190,7 +194,14 @@ class _FilterPageState extends State<FilterPage> {
                 backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF40C6BD)),
               ),
               onPressed: () {
-                // powrot do ekranu wyszukiwania z (przekazac dane filtrow)
+                filters.category = widget.category;
+                filters.name = getValue(name.text);
+                filters.make = getValue(make.text);
+                filters.model = getValue(model.text);
+                filters.gender = getGender();
+                setPriceRange();
+
+                Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage(category: widget.category, filters: filters, )));
               },
               child: Text("APPLY"),
             ),
@@ -202,7 +213,11 @@ class _FilterPageState extends State<FilterPage> {
                 backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
               ),
               onPressed: () {
-                // powrot do ekranu wyszukiwania z (przekazac dane filtrow)
+                name.clear();
+                make.clear();
+                model.clear();
+                genderValue = 'All';
+                priceValue = 'All prices';
               },
               child: Text("CLEAR"),
             ),
@@ -210,5 +225,31 @@ class _FilterPageState extends State<FilterPage> {
         ],
       ),
     );
+  }
+
+  String getValue(String value) {
+    if(value == '') {
+      return "%20";
+    }
+    return value;
+  }
+
+  String getGender() {
+    if(genderValue == "All") {
+      return "%20";
+    }
+    return genderValue;
+  }
+
+  void setPriceRange() {
+    switch(priceValue) {
+      case 'All prices': filters.minPrice = '%20'; filters.maxPrice = '%20'; break;
+      case 'Under 100': filters.minPrice = 0 as String?; filters.maxPrice = 100 as String?; break;
+      case '100-200': filters.minPrice = 100 as String?; filters.maxPrice = 200 as String?; break;
+      case '200-300': filters.minPrice = 200 as String?; filters.maxPrice = 300 as String?; break;
+      case '300-400': filters.minPrice = 300 as String?; filters.maxPrice = 400 as String?; break;
+      case '400-500': filters.minPrice = 400 as String?; filters.maxPrice = 500 as String?; break;
+      case '500+': filters.minPrice = 500 as String?; filters.maxPrice = '%20'; break;
+    }
   }
 }

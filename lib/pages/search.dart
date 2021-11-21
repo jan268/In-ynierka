@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:net_market/mocks/mocked_lists.dart';
+import 'package:net_market/objects/filter_object.dart';
 import 'package:net_market/pages/filters.dart';
 import 'package:net_market/pages/item_in_list_column.dart';
 
@@ -7,7 +8,8 @@ import 'home.dart';
 
 class SearchPage extends StatefulWidget {
   final String category;
-  const SearchPage({Key? key, required this.category}) : super(key: key);
+  final FilterObject filters;
+  const SearchPage({Key? key, required this.category, required this.filters}) : super(key: key);
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -54,14 +56,25 @@ class _SearchPageState extends State<SearchPage> {
                 Row(
                   children: [
                     SizedBox(
-                      width: MediaQuery.of(context).size.width - 50,
+                      width: MediaQuery.of(context).size.width - 150,
                       child: TextField(
                         controller: myController,
                       ),
                     ),
                     IconButton(
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => FilterPage()));
+                        // odpalenie wyszukania
+                        setState(() {
+                          widget.filters.name = myController.text;
+                        });
+                      },
+                      icon: Icon(
+                          Icons.search
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => FilterPage(category: widget.category,)));
                       },
                       icon: Icon(
                           Icons.settings
@@ -74,7 +87,7 @@ class _SearchPageState extends State<SearchPage> {
                   height: 489,
                   child: Container(
                       color: Colors.white,
-                      child: ItemInListColumn(category: widget.category,)
+                      child: ItemInListColumn(filterObject: widget.filters,)
                   ),
                 ),
               ],

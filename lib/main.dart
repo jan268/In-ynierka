@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:net_market/objects/filter_object.dart';
 import 'package:net_market/objects/item_card_object.dart';
 import 'package:net_market/pages/buy_item.dart';
 import 'package:net_market/pages/filters.dart';
@@ -18,8 +19,8 @@ void main() {
       '/login_screen' : (context) => LoginScreen(),
       '/buy_item' : (context) => BuyItem(itemCardObject: ItemCardObject(), size: '',),
       '/item_card' : (context) => ItemCard(id: '',),
-      '/search' : (context) => SearchPage(category: 'Streetwear',),
-      '/filters' : (context) => FilterPage(),
+      '/search' : (context) => SearchPage(category: 'Sneakers', filters: FilterObject.category("Sneakers"),),
+      '/filters' : (context) => FilterPage(category: '',),
     },
   ));
 }

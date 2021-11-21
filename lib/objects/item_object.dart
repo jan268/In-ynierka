@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
+import 'package:net_market/objects/filter_object.dart';
 
 import 'brand_object.dart';
 
@@ -65,6 +66,17 @@ class ItemObject {
     // make request
     List<ItemObject> items;
     Response response = await get(Uri.parse("http://netmarket-api.eu-central-1.elasticbeanstalk.com/api/Items?Category=${category}"));
+    var data = jsonDecode(response.body);
+    var list = data["items"] as List;
+    items = list.map<ItemObject>((json) => ItemObject.fromJson(json)).toList();
+
+    return items;
+  }
+
+  static Future<List<ItemObject>> getItemsWithFilters(FilterObject filterObject) async {
+    // make request
+    List<ItemObject> items;
+    Response response = await get(Uri.parse("http://netmarket-api.eu-central-1.elasticbeanstalk.com/api/Items?Brand=${filterObject.brand}&Category=${filterObject.category}&Make=${filterObject.make}&Name=${filterObject.name}&Model=${filterObject.model}&Gender=${filterObject.gender}&MinPrice=${filterObject.minPrice}&MaxPrice=${filterObject.maxPrice}"));
     var data = jsonDecode(response.body);
     var list = data["items"] as List;
     items = list.map<ItemObject>((json) => ItemObject.fromJson(json)).toList();
