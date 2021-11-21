@@ -78,7 +78,7 @@ class _RegisterState extends State<Register> {
                       SizedBox(height: 30.0,),
                       _buildRepeatPasswordTF(),
                       SizedBox(height: 30.0),
-                      _buildLoginBtn(),
+                      _buildRegisterBtn(),
                     ],
                   ),
                 ),
@@ -244,6 +244,7 @@ class _RegisterState extends State<Register> {
   Future<void> registerAction() async {
     if(verifyPassword(password.text, repeatPassword.text)) {
       Map<String, String> body = prepareBody();
+      print(body);
       var response = await post(Uri.parse("http://netmarket-api.eu-central-1.elasticbeanstalk.com/api/Identity/register"),
           headers: {
             "accept": "*/*",
@@ -251,6 +252,7 @@ class _RegisterState extends State<Register> {
           },
           body: json.encode(body),
           encoding: Encoding.getByName("utf-8"));
+      print(response.body);
       if(response.statusCode == 200) {
         Navigator.push(context, MaterialPageRoute(builder: (context) => Home(category: 'SNEAKERS',)));
         await UserSecureStorage.setJwt(response.body);
@@ -262,13 +264,13 @@ class _RegisterState extends State<Register> {
   Map<String, String> prepareBody() {
      var body = {
       "email": "${email.text}",
-      "userName": "${password.text}",
+      "userName": "${username.text}",
       "password": "${password.text}"
     };
     return body;
   }
 
-  Widget _buildLoginBtn() {
+  Widget _buildRegisterBtn() {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,

@@ -22,8 +22,6 @@ class _LoadingState extends State<Loading> {
     } else {
       Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
     }
-    //tu bedzie zaciaganie usera
-    //tu bedzie if (ze jesli juz zalogowany to /home, jak nie to login_screen
   }
 
   @override

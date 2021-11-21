@@ -13,16 +13,16 @@ import 'package:net_market/pages/search.dart';
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    initialRoute: "/login_screen",
+    initialRoute: "/",
     routes: {
       '/' : (context) => Loading(),
-      '/home' : (context) => Home(category: 'SNEAKERS',),
       '/login_screen' : (context) => LoginScreen(),
+      '/register' : (context) => Register(),
+      '/home' : (context) => Home(category: 'SNEAKERS',),
       '/buy_item' : (context) => BuyItem(itemCardObject: ItemCardObject(), size: '',),
       '/item_card' : (context) => ItemCard(id: '',),
       '/search' : (context) => SearchPage(category: 'SNEAKERS', filters: FilterObject.category("SNEAKERS"),),
       '/filters' : (context) => FilterPage(category: '',),
-      '/register' : (context) => Register(),
     },
   ));
 }
