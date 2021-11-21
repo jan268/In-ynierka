@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:net_market/mocks/mocked_lists.dart';
 import 'package:net_market/objects/filter_object.dart';
 import 'package:net_market/objects/item_object.dart';
 import 'package:net_market/pages/item_card.dart';
@@ -92,7 +93,7 @@ class _ItemInListColumnState extends State<ItemInListColumn> {
         }
 
         // Displaying LoadingSpinner to indicate waiting state
-        return Loading();
+        return MockedLists.loadingWidget();
       },
 
       // Future that needs to be resolved

@@ -1,11 +1,24 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:net_market/utilities/basic_icons_icons.dart';
 
 class MockedLists {
 
   List<String> categories = ['SNEAKERS', 'STREETWEAR', 'COLLECTIBLES', 'ELECTRONICS'];
+
+  static Widget loadingWidget() {
+    return Scaffold(
+      backgroundColor: Colors.tealAccent,
+      body: Center(
+        child: SpinKitCircle(
+          color: Colors.white,
+          size: 50.0,
+        ),
+      ),
+    );
+  }
 
   List<Widget> brands = <Widget>[
     SizedBox(

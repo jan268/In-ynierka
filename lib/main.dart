@@ -7,6 +7,7 @@ import 'package:net_market/pages/home.dart';
 import 'package:net_market/pages/item_card.dart';
 import 'package:net_market/pages/loading.dart';
 import 'package:net_market/pages/login_screen.dart';
+import 'package:net_market/pages/register.dart';
 import 'package:net_market/pages/search.dart';
 
 void main() {
@@ -21,6 +22,7 @@ void main() {
       '/item_card' : (context) => ItemCard(id: '',),
       '/search' : (context) => SearchPage(category: 'SNEAKERS', filters: FilterObject.category("SNEAKERS"),),
       '/filters' : (context) => FilterPage(category: '',),
+      '/register' : (context) => Register(),
     },
   ));
 }

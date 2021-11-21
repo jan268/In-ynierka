@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
+import 'package:net_market/pages/register.dart';
 import 'package:net_market/utilities/constants.dart';
 import 'package:net_market/utilities/user_secure_storage.dart';
 
@@ -148,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         color: Colors.white,
         child: Text(
-          'LOGIN',
+          'Log in',
           style: TextStyle(
             color: Color(0xFF8DEFE8),
             letterSpacing: 1.5,
@@ -187,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildSignupBtn() {
     return GestureDetector(
-      onTap: () => print('Sign Up Button Pressed'),
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Register())),
       child: RichText(
         text: TextSpan(
           children: [
@@ -251,7 +252,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        'Sign In',
+                        'Log In',
                         style: TextStyle(
                           color: Colors.white,
                           fontFamily: 'OpenSans',

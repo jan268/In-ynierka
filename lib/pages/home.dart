@@ -14,10 +14,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  // get bottomNavBar => MockedLists().bottomNavBar;
   get categories => MockedLists().categories;
   get brands => MockedLists().brands;
-  // get items => MockedLists().items;
 
   @override
   Widget build(BuildContext context) {

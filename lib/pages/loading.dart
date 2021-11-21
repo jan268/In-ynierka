@@ -1,6 +1,10 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:net_market/mocks/mocked_lists.dart';
+import 'package:net_market/pages/login_screen.dart';
+import 'package:net_market/utilities/user_secure_storage.dart';
+
+import 'home.dart';
 
 class Loading extends StatefulWidget {
   const Loading({Key? key}) : super(key: key);
@@ -12,10 +16,14 @@ class Loading extends StatefulWidget {
 class _LoadingState extends State<Loading> {
 
   void loadUser() async {
+    String token = await UserSecureStorage.getJwt() as String;
+    if (token != '') {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Home(category: 'SNEAKERS',)));
+    } else {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+    }
     //tu bedzie zaciaganie usera
     //tu bedzie if (ze jesli juz zalogowany to /home, jak nie to login_screen
-    // await Future.delayed(Duration(seconds: 2));
-    // Navigator.pushReplacementNamed(context, "/login_screen");
   }
 
   @override
@@ -26,14 +34,7 @@ class _LoadingState extends State<Loading> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.tealAccent,
-      body: Center(
-        child: SpinKitCircle(
-          color: Colors.white,
-          size: 50.0,
-        ),
-      ),
-    );
+    return MockedLists.loadingWidget();
   }
+
 }
