@@ -128,7 +128,7 @@ class _SearchPageState extends State<SearchPage> {
 
   void onTabTapped(int index) {
     switch(index){
-      case 0 : Navigator.push(context, MaterialPageRoute(builder: (context) => Home(category: 'Streetwear',))); break;
+      case 0 : Navigator.push(context, MaterialPageRoute(builder: (context) => Home(category: 'SNEAKERS',))); break;
       case 1 : break;
       case 2 : break; // tu trzeba dodac bedzie ekran uzytkownika
     }

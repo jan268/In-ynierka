@@ -12,10 +12,10 @@ import 'package:net_market/pages/search.dart';
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    initialRoute: "/home",
+    initialRoute: "/login_screen",
     routes: {
       '/' : (context) => Loading(),
-      '/home' : (context) => Home(category: 'Streetwear',),
+      '/home' : (context) => Home(category: 'SNEAKERS',),
       '/login_screen' : (context) => LoginScreen(),
       '/buy_item' : (context) => BuyItem(itemCardObject: ItemCardObject(), size: '',),
       '/item_card' : (context) => ItemCard(id: '',),

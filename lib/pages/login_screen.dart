@@ -1,6 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart';
 import 'package:net_market/utilities/constants.dart';
+import 'package:net_market/utilities/user_secure_storage.dart';
+
+import 'home.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -9,6 +15,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _rememberMe = false;
+  final email = TextEditingController();
+  final password = TextEditingController();
 
   Widget _buildEmailTF() {
     return Column(
@@ -24,6 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
           decoration: kBoxDecorationStyle,
           height: 60.0,
           child: TextField(
+            controller: email,
             keyboardType: TextInputType.emailAddress,
             style: TextStyle(
               color: Colors.white,
@@ -59,6 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
           decoration: kBoxDecorationStyle,
           height: 60.0,
           child: TextField(
+            controller: password,
             obscureText: true,
             style: TextStyle(
               color: Colors.white,
@@ -107,13 +117,31 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Future<void> loginAction() async {
+    var body = {
+      "email": "${email.text}",
+      "password": "${password.text}"
+    };
+    var response = await post(Uri.parse("http://netmarket-api.eu-central-1.elasticbeanstalk.com/api/Identity/login"),
+        headers: {
+          "accept": "*/*",
+          "Content-Type": "application/json"
+        },
+        body: json.encode(body),
+        encoding: Encoding.getByName("utf-8"));
+    if(response.statusCode == 200) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => Home(category: 'SNEAKERS',)));
+        await UserSecureStorage.setJwt(response.body);
+    } // tu trzeba zrobic obsluge tego, ze sie nie udalo zalogowac
+  }
+
   Widget _buildLoginBtn() {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
       child: RaisedButton(
         elevation: 5.0,
-        onPressed: () => print('Login Button Pressed'),
+        onPressed: () => loginAction(), // tu robimy obsluge logowania
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
