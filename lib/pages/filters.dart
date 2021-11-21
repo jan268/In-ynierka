@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:net_market/mocks/mocked_lists.dart';
 import 'package:net_market/objects/filter_object.dart';
 import 'package:net_market/pages/search.dart';
 
@@ -16,6 +17,7 @@ class _FilterPageState extends State<FilterPage> {
   final name = TextEditingController();
   final make = TextEditingController();
   final model = TextEditingController();
+  late String categoryValue = widget.category;
   String genderValue = "All";
   String priceValue = "All prices";
   FilterObject filters = FilterObject();
@@ -31,7 +33,7 @@ class _FilterPageState extends State<FilterPage> {
               Row(
                 children: [
                   SizedBox(
-                    width: 80,
+                    width: 100,
                     child: Align(
                       alignment: Alignment.center,
                       child: Text(
@@ -54,7 +56,7 @@ class _FilterPageState extends State<FilterPage> {
               Row(
                 children: [
                   SizedBox(
-                    width: 80,
+                    width: 100,
                     child: Align(
                       alignment: Alignment.center,
                       child: Text(
@@ -77,7 +79,7 @@ class _FilterPageState extends State<FilterPage> {
               Row(
                 children: [
                   SizedBox(
-                    width: 80,
+                    width: 100,
                     child: Align(
                       alignment: Alignment.center,
                       child: Text(
@@ -100,7 +102,7 @@ class _FilterPageState extends State<FilterPage> {
               Row(
                 children: [
                   SizedBox(
-                    width: 80,
+                    width: 100,
                     child: Align(
                       alignment: Alignment.center,
                       child: Text(
@@ -142,7 +144,7 @@ class _FilterPageState extends State<FilterPage> {
               Row(
                 children: [
                   SizedBox(
-                    width: 80,
+                    width: 100,
                     child: Align(
                       alignment: Alignment.center,
                       child: Text(
@@ -181,6 +183,48 @@ class _FilterPageState extends State<FilterPage> {
                   ),
                 ],
               ),
+              Row(
+                children: [
+                  SizedBox(
+                    width: 100,
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Category:",
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                      child: DropdownButton<String>(
+                        value: categoryValue,
+                        icon: const Icon(Icons.category),
+                        iconSize: 24,
+                        elevation: 16,
+                        style: const TextStyle(color: Color(0xFF40C6BD)),
+                        underline: Container(
+                          height: 2,
+                          color: Color(0xFF40C6BD),
+                        ),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            categoryValue = newValue!;
+                          });
+                        },
+                        items: MockedLists().categories
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      )
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -194,7 +238,7 @@ class _FilterPageState extends State<FilterPage> {
                 backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF40C6BD)),
               ),
               onPressed: () {
-                filters.category = widget.category;
+                filters.category = categoryValue;
                 filters.name = getValue(name.text);
                 filters.make = getValue(make.text);
                 filters.model = getValue(model.text);
@@ -216,8 +260,11 @@ class _FilterPageState extends State<FilterPage> {
                 name.clear();
                 make.clear();
                 model.clear();
-                genderValue = 'All';
-                priceValue = 'All prices';
+                setState(() {
+                  genderValue = 'All';
+                  priceValue = 'All prices';
+                  categoryValue = widget.category;
+                });
               },
               child: Text("CLEAR"),
             ),

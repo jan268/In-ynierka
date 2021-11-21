@@ -19,7 +19,7 @@ void main() {
       '/login_screen' : (context) => LoginScreen(),
       '/buy_item' : (context) => BuyItem(itemCardObject: ItemCardObject(), size: '',),
       '/item_card' : (context) => ItemCard(id: '',),
-      '/search' : (context) => SearchPage(category: 'Sneakers', filters: FilterObject.category("Sneakers"),),
+      '/search' : (context) => SearchPage(category: 'SNEAKERS', filters: FilterObject.category("SNEAKERS"),),
       '/filters' : (context) => FilterPage(category: '',),
     },
   ));

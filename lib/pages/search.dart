@@ -43,7 +43,7 @@ class _SearchPageState extends State<SearchPage> {
                   itemBuilder: (BuildContext context, int index) {
                     return TextButton(
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Home(category: categories[index],)));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage(category: categories[index], filters: FilterObject.category(categories[index]), )));
                       },
                       child: Text(
                         categories[index],
