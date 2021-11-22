@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:net_market/objects/account_object.dart';
+import 'package:net_market/objects/decoded_token_object.dart';
 import 'package:net_market/objects/filter_object.dart';
 import 'package:net_market/pages/search.dart';
 import 'package:net_market/utilities/basic_icons_icons.dart';
@@ -15,6 +18,7 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage> {
   AccountObject account = AccountObject();
+  DecodedTokenObject tokenObject = DecodedTokenObject();
 
 
   @override
@@ -24,10 +28,36 @@ class _AccountPageState extends State<AccountPage> {
       bottomNavigationBar: getNavBar(2),
       body: Container(
         child: SafeArea(
-          child: Column(
+          child: ListView(
             children: [
-              ListTile(
-                leading: Icon(Icons.person),
+              Card(
+                child: Container(
+                  color: Colors.tealAccent,
+                  child: ListTile(
+                    title: Center(child: Text("Jan Witek")),
+                  ),
+                ),
+              ),
+              Card(
+                child: ListTile(
+                  leading: Icon(Icons.person),
+                  title: Text("Account Settings"),
+                  subtitle: Text("Change password"),
+                ),
+              ),
+              Card(
+                child: ListTile(
+                  leading: Icon(CupertinoIcons.cube_box),
+                  title: Text("Buying"),
+                  subtitle: Text("Check what you bought"),
+                ),
+              ),
+              Card(
+                child: ListTile(
+                  leading: Icon(Icons.trending_up), // tu do zmiany ikona
+                  title: Text("Selling"),
+                  subtitle: Text("Check what you sold"),
+                ),
               )
             ],
           )
@@ -41,7 +71,8 @@ class _AccountPageState extends State<AccountPage> {
   void initState() {
     super.initState();
     setState(() {
-      account = AccountObject.getAccount() as AccountObject;
+      // account = AccountObject.getAccount() as AccountObject;
+      // tokenObject = DecodedTokenObject.getDecodedToken();
     });
   }
 
