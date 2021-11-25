@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:net_market/objects/account_object.dart';
 import 'package:net_market/objects/decoded_token_object.dart';
 import 'package:net_market/objects/filter_object.dart';
+import 'package:net_market/pages/profile.dart';
 import 'package:net_market/pages/search.dart';
 import 'package:net_market/utilities/basic_icons_icons.dart';
 
@@ -34,37 +34,56 @@ class _AccountPageState extends State<AccountPage> {
                 child: Container(
                   color: Colors.tealAccent,
                   child: ListTile(
-                    title: Center(child: Text("Jan Witek")),
+                    title: Center(child: Text("Jan Witek")), // tu bedzie imie uzytkownika
                   ),
                 ),
               ),
               Card(
                 child: ListTile(
+                  onTap: () {
+                    navigateToTile(context);
+                  },
                   leading: Icon(Icons.person),
-                  title: Text("Account Settings"),
-                  subtitle: Text("Change password"),
+                  title: Text("Profile"),
+                  subtitle: Text("Check profile details"),
                 ),
               ),
               Card(
                 child: ListTile(
                   leading: Icon(CupertinoIcons.cube_box),
-                  title: Text("Buying"),
-                  subtitle: Text("Check what you bought"),
+                  title: Text("Bids"),
+                  subtitle: Text("Check bids"),
                 ),
               ),
               Card(
                 child: ListTile(
-                  leading: Icon(Icons.trending_up), // tu do zmiany ikona
-                  title: Text("Selling"),
-                  subtitle: Text("Check what you sold"),
+                  leading: Icon(Icons.monetization_on_sharp),
+                  title: Text("Asks"),
+                  subtitle: Text("Check asks"),
                 ),
-              )
+              ),
+              Card(
+                child: ListTile(
+                  leading: Icon(Icons.list),
+                  title: Text("Transactions"),
+                  subtitle: Text("Check history of transactions"),
+                )
+              ),
+              Card(
+                  child: ListTile(
+                    leading: Icon(Icons.settings),
+                    title: Text("Setting"),
+                    subtitle: Text("Change password"),
+                  )
+              ),
             ],
           )
         ),
       ),
     );
   }
+
+  Future<dynamic> navigateToTile(BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
 
 
   @override
