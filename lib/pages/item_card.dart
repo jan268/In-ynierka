@@ -107,7 +107,7 @@ class _ItemCardState extends State<ItemCard> {
                                   SizedBox(
                                       child: Text(
                                           getHighestBid(itemCardObject))
-                                  ), // tu trzeba dac cene Lowest ASK
+                                  ),
                                   SizedBox(
                                       child: Text("Sell", style: TextStyle(fontSize: 20),)
                                   ),

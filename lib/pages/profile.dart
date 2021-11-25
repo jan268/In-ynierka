@@ -18,6 +18,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          title: Text("Profile"),
           backgroundColor: Colors.tealAccent,
         ),
         backgroundColor: Colors.white,
@@ -47,10 +48,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: CircleAvatar(
                       backgroundColor: Colors.tealAccent,
                       child: Text(
-                        "1",
+                        "1", // tu bedzie current Level
                         style: TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.black),
-                      ), // tu bedzie current Level
+                      ),
                       radius: 40.0,
                     ),
                   ),

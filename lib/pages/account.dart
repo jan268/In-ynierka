@@ -5,6 +5,7 @@ import 'package:net_market/objects/decoded_token_object.dart';
 import 'package:net_market/objects/filter_object.dart';
 import 'package:net_market/pages/profile.dart';
 import 'package:net_market/pages/search.dart';
+import 'package:net_market/pages/settings.dart';
 import 'package:net_market/utilities/basic_icons_icons.dart';
 
 import 'home.dart';
@@ -41,7 +42,7 @@ class _AccountPageState extends State<AccountPage> {
               Card(
                 child: ListTile(
                   onTap: () {
-                    navigateToTile(context);
+                    navigateToProfile(context);
                   },
                   leading: Icon(Icons.person),
                   title: Text("Profile"),
@@ -50,6 +51,9 @@ class _AccountPageState extends State<AccountPage> {
               ),
               Card(
                 child: ListTile(
+                  onTap: () {
+                    navigateToBids(context);
+                  },
                   leading: Icon(CupertinoIcons.cube_box),
                   title: Text("Bids"),
                   subtitle: Text("Check bids"),
@@ -57,6 +61,9 @@ class _AccountPageState extends State<AccountPage> {
               ),
               Card(
                 child: ListTile(
+                  onTap: () {
+                    navigateToAsks(context);
+                  },
                   leading: Icon(Icons.monetization_on_sharp),
                   title: Text("Asks"),
                   subtitle: Text("Check asks"),
@@ -64,6 +71,9 @@ class _AccountPageState extends State<AccountPage> {
               ),
               Card(
                 child: ListTile(
+                  onTap: () {
+                    navigateToTransactions(context);
+                  },
                   leading: Icon(Icons.list),
                   title: Text("Transactions"),
                   subtitle: Text("Check history of transactions"),
@@ -71,8 +81,11 @@ class _AccountPageState extends State<AccountPage> {
               ),
               Card(
                   child: ListTile(
+                    onTap: () {
+                      navigateToSettings(context);
+                    },
                     leading: Icon(Icons.settings),
-                    title: Text("Setting"),
+                    title: Text("Settings"),
                     subtitle: Text("Change password"),
                   )
               ),
@@ -83,8 +96,11 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  Future<dynamic> navigateToTile(BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
-
+  Future<dynamic> navigateToProfile(BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
+  Future<dynamic> navigateToBids(BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
+  Future<dynamic> navigateToAsks(BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
+  Future<dynamic> navigateToTransactions(BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
+  Future<dynamic> navigateToSettings(BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
 
   @override
   void initState() {
