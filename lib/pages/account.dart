@@ -6,8 +6,11 @@ import 'package:net_market/objects/filter_object.dart';
 import 'package:net_market/pages/profile.dart';
 import 'package:net_market/pages/search.dart';
 import 'package:net_market/pages/settings.dart';
+import 'package:net_market/pages/bids.dart';
+import 'package:net_market/pages/transactions.dart';
 import 'package:net_market/utilities/basic_icons_icons.dart';
 
+import 'asks.dart';
 import 'home.dart';
 
 class AccountPage extends StatefulWidget {
@@ -97,9 +100,9 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Future<dynamic> navigateToProfile(BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
-  Future<dynamic> navigateToBids(BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
-  Future<dynamic> navigateToAsks(BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
-  Future<dynamic> navigateToTransactions(BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
+  Future<dynamic> navigateToBids(BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BidsPage()));
+  Future<dynamic> navigateToAsks(BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (context) => AsksPage()));
+  Future<dynamic> navigateToTransactions(BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (context) => TransactionsPage()));
   Future<dynamic> navigateToSettings(BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
 
   @override
