@@ -89,6 +89,11 @@ class _BuyItemState extends State<BuyItem> {
                   onToggle: (index) {
                     buyNow = !buyNow;
                     print('switched to: $buyNow');
+                    if(buyNow == true) {
+                      myController.clear();
+                    } else {
+                      myController.text = getLowestAsk(item.item!);
+                    }
                   },
                 ),
                 Center(
@@ -153,5 +158,11 @@ class _BuyItemState extends State<BuyItem> {
     }
     String price =  item.highestBid as String;
     return price + "USD";
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    myController.text = getLowestAsk(item.item!);
   }
 }

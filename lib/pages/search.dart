@@ -5,6 +5,7 @@ import 'package:net_market/pages/filters.dart';
 import 'package:net_market/pages/item_in_list_column.dart';
 import 'package:net_market/utilities/basic_icons_icons.dart';
 
+import 'account.dart';
 import 'home.dart';
 
 class SearchPage extends StatefulWidget {
@@ -130,7 +131,7 @@ class _SearchPageState extends State<SearchPage> {
     switch(index){
       case 0 : Navigator.push(context, MaterialPageRoute(builder: (context) => Home(category: 'SNEAKERS',))); break;
       case 1 : break;
-      case 2 : break; // tu trzeba dodac bedzie ekran uzytkownika
+      case 2 : Navigator.push(context, MaterialPageRoute(builder: (context) => AccountPage())); break;
     }
   }
 }

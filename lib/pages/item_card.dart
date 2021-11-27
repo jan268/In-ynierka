@@ -4,6 +4,7 @@ import 'package:net_market/mocks/mocked_lists.dart';
 import 'package:net_market/objects/item_card_object.dart';
 import 'package:net_market/objects/item_object.dart';
 import 'package:net_market/pages/buy_item.dart';
+import 'package:net_market/pages/sell_item.dart';
 
 class ItemCard extends StatefulWidget {
   final String category;
@@ -118,7 +119,21 @@ class _ItemCardState extends State<ItemCard> {
                               backgroundColor:
                                   MaterialStateProperty.all<Color>(Colors.red),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              if(streetwearNoSize() || sneakersNoSize()) {
+                                if(widget.category == "SNEAKERS") {
+                                  shoesSizePopUp();
+                                } else clothesSizePopUp();
+                              } else {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SellItem(
+                                          itemCardObject: itemCardObject,
+                                          size: size!,
+                                        )));
+                              }
+                            },
                             child: Container(
                               child: Row(
                                 mainAxisAlignment:
