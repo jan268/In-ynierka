@@ -20,6 +20,7 @@ class _SellItemState extends State<SellItem> {
   late ItemCardObject item = widget.itemCardObject;
   final myController = TextEditingController();
   bool buyNow = true;
+  int toggleIndex = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -84,18 +85,22 @@ class _SellItemState extends State<SellItem> {
                 activeFgColor: Colors.white,
                 inactiveBgColor: Colors.grey,
                 inactiveFgColor: Colors.white,
-                initialLabelIndex: 1,
+                initialLabelIndex: toggleIndex,
                 totalSwitches: 2,
                 labels: ['Place Ask', 'Sell Now'],
                 radiusStyle: true,
                 onToggle: (index) {
-                  buyNow = !buyNow;
-                  print('switched to: $buyNow');
-                  if(buyNow == false) {
-                    myController.clear();
-                  } else {
-                    myController.text = getHighestBid(item.item!);
-                  }
+                  setState(() {
+                    buyNow = !buyNow;
+                    print('switched to: $buyNow');
+                    if(buyNow == false) {
+                      toggleIndex = 0;
+                      myController.clear();
+                    } else {
+                      toggleIndex = 1;
+                      myController.text = getHighestBid(item.item!);
+                    }
+                  });
                 },
               ),
               Center(
@@ -116,6 +121,7 @@ class _SellItemState extends State<SellItem> {
                       SizedBox(
                         width: 150,
                         child: TextField(
+                          enabled: !buyNow,
                           controller: myController,
                         ),
                       ),
