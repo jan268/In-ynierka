@@ -51,7 +51,7 @@ class _ItemInListState extends State<ItemInList> {
                         onPressed: () {
                           print("clicked ${item.name}");
                           print("${item.id}");
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => ItemCard(id: item.id!,)));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ItemCard(id: item.id!, category: widget.category,)));
                           },
                         child: Container(
                           color: Colors.grey[100],

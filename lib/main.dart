@@ -21,7 +21,7 @@ void main() {
       '/register' : (context) => Register(),
       '/home' : (context) => Home(category: 'SNEAKERS',),
       '/buy_item' : (context) => BuyItem(itemCardObject: ItemCardObject(), size: '',),
-      '/item_card' : (context) => ItemCard(id: '',),
+      '/item_card' : (context) => ItemCard(id: '', category: '',),
       '/search' : (context) => SearchPage(category: 'SNEAKERS', filters: FilterObject.category("SNEAKERS"),),
       '/filters' : (context) => FilterPage(category: '',),
       '/account' : (context) => AccountPage(),
