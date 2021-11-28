@@ -7,16 +7,15 @@ import 'package:toggle_switch/toggle_switch.dart';
 class SellItem extends StatefulWidget {
   final ItemCardObject itemCardObject;
   final String size;
-  const SellItem({Key? key, required this.itemCardObject, required this.size}) : super(key: key);
+
+  const SellItem({Key? key, required this.itemCardObject, required this.size})
+      : super(key: key);
 
   @override
   _SellItemState createState() => _SellItemState();
 }
 
 class _SellItemState extends State<SellItem> {
-
-
-
   late ItemCardObject item = widget.itemCardObject;
   final myController = TextEditingController();
   bool buyNow = true;
@@ -27,14 +26,13 @@ class _SellItemState extends State<SellItem> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: SingleChildScrollView (
+        child: SingleChildScrollView(
           child: Column(
             children: [
               Center(
                 child: SizedBox(
                     height: 200,
-                    child: Image.network(item.item!.thumbUrl as String)
-                ),
+                    child: Image.network(item.item!.thumbUrl as String)),
               ),
               SizedBox(
                 height: 50,
@@ -47,9 +45,7 @@ class _SellItemState extends State<SellItem> {
                           Text(
                             "Highest Bid: ${getHighestBid(item.item!)}",
                             style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold
-                            ),
+                                fontSize: 12, fontWeight: FontWeight.bold),
                           ),
                           VerticalDivider(
                             thickness: 2,
@@ -59,9 +55,7 @@ class _SellItemState extends State<SellItem> {
                           Text(
                             "Lowest Ask : ${getLowestAsk(item.item!)}",
                             style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold
-                            ),
+                                fontSize: 12, fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
@@ -70,9 +64,7 @@ class _SellItemState extends State<SellItem> {
                       child: Text(
                         widget.size,
                         style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold
-                        ),
+                            fontSize: 12, fontWeight: FontWeight.bold),
                       ),
                     )
                   ],
@@ -81,7 +73,11 @@ class _SellItemState extends State<SellItem> {
               ToggleSwitch(
                 minWidth: 90.0,
                 cornerRadius: 20.0,
-                activeBgColors: [[Colors.red[800]!], [Colors.red[800]!]], //Color(0xFF40C6BD)
+                activeBgColors: [
+                  [Colors.red[800]!],
+                  [Colors.red[800]!]
+                ],
+                //Color(0xFF40C6BD)
                 activeFgColor: Colors.white,
                 inactiveBgColor: Colors.grey,
                 inactiveFgColor: Colors.white,
@@ -93,7 +89,7 @@ class _SellItemState extends State<SellItem> {
                   setState(() {
                     buyNow = !buyNow;
                     print('switched to: $buyNow');
-                    if(buyNow == false) {
+                    if (buyNow == false) {
                       toggleIndex = 0;
                       myController.clear();
                     } else {
@@ -110,14 +106,12 @@ class _SellItemState extends State<SellItem> {
                   child: Row(
                     children: [
                       SizedBox(
-                          width: 50,child: Text(
-                        "USD",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20
-                        ),
-                      )
-                      ),
+                          width: 50,
+                          child: Text(
+                            "USD",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20),
+                          )),
                       SizedBox(
                         width: 150,
                         child: TextField(
@@ -125,6 +119,44 @@ class _SellItemState extends State<SellItem> {
                           controller: myController,
                         ),
                       ),
+                    ],
+                  ),
+                ),
+              ),
+              Center(
+                child: SizedBox(
+                  height: 30,
+                  width: 200,
+                  child: Row(
+                    children: [
+                      Text(
+                        "Fee:",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                      SizedBox(width: 20,),
+                      Text(
+                          "3.00",
+                          style: TextStyle(fontSize: 18),),
+                    ],
+                  ),
+                ),
+              ),
+              Center(
+                child: SizedBox(
+                  height: 30,
+                  width: 200,
+                  child: Row(
+                    children: [
+                      Text(
+                        "Total Price:",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                      SizedBox(width: 20,),
+                      Text(
+                        "33.00",
+                        style: TextStyle(fontSize: 18),),
                     ],
                   ),
                 ),
@@ -138,10 +170,11 @@ class _SellItemState extends State<SellItem> {
           onPressed: () {
             if (buyNow == true) {
               print("Buy for ${myController.text}");
+              sellItemNow();
               // tu bedzie akcja dla buy z cena z tego text
-            }
-            else {
+            } else {
               print("Place bid for ${myController.text}");
+              placeAsk();
               // tu bedzie akcja dla Place Bid z cena z tego text
             }
           },
@@ -157,6 +190,9 @@ class _SellItemState extends State<SellItem> {
       return "--";
     }
     String price = item.lowestAsk as String;
+    if (price.contains('.') && checkIfBidTooLong(price)) {
+      price =  price.substring(0, price.lastIndexOf('.') + 3);
+    }
     return price + "USD";
   }
 
@@ -164,8 +200,104 @@ class _SellItemState extends State<SellItem> {
     if (item.highestBid == null) {
       return "--";
     }
-    String price =  item.highestBid as String;
+    String price = item.highestBid as String;
+    if (price.contains('.') && checkIfBidTooLong(price)) {
+      price =  price.substring(0, price.lastIndexOf('.') + 3);
+    }
     return price + "USD";
+  }
+
+  bool checkIfBidTooLong(String highestBid) {
+    if (highestBid.substring(highestBid.lastIndexOf('.'), highestBid.length).length > 2) {
+      return true;
+    }
+    return false;
+  }
+
+  String getItemName(ItemCardObject itemCardObject) {
+    return itemCardObject.item!.name as String;
+  }
+
+  failToSellItem() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.red[200],
+            title: const Text('Something went wrong!'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('We are sorry to announce that an error occurred, please try again.')
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Ok'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  placeAsk() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.green[200],
+            title: const Text('Successfully placed ask!'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('We are happy to announce that you placed an ask for:'),
+                  Text(getItemName(item), style: TextStyle(fontWeight: FontWeight.bold),),
+
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Ok'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  sellItemNow() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.green[200],
+            title: const Text('Successfully sold item!'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('We are happy to announce that you sold:'),
+                  Text(getItemName(item), style: TextStyle(fontWeight: FontWeight.bold),),
+
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Ok'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
 
   @override
