@@ -17,6 +17,7 @@ class Loading extends StatefulWidget {
 class _LoadingState extends State<Loading> {
 
   void loadUser() async {
+
     String? token = await UserSecureStorage.getJwt();
     if (token != null) {
       if (token != '' && JwtDecoder.isExpired(token) != true) {

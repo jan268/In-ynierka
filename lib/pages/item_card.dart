@@ -54,13 +54,13 @@ class _ItemCardState extends State<ItemCard> {
           child: Column(
             children: [
               SizedBox(
-                height: 100,
+                height: 70,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     SizedBox(height: 64, width: 80, child: getSizeWidget()),
                     SizedBox(
-                      height: 100,
+                      height: 70,
                       width: 120,
                       child: Column(
                         children: [
@@ -103,15 +103,15 @@ class _ItemCardState extends State<ItemCard> {
                                   ],
                                 ),
                               )),
-                          TextButton(
-                            onPressed: () {},
-                            child: Text("View All Asks"),
-                          ),
+                          // TextButton(
+                          //   onPressed: () {},
+                          //   child: Text("View All Asks"),
+                          // ),
                         ],
                       ),
                     ),
                     SizedBox(
-                      height: 100,
+                      height: 70,
                       width: 120,
                       child: Column(children: [
                         ElevatedButton(
@@ -150,10 +150,10 @@ class _ItemCardState extends State<ItemCard> {
                                 ],
                               ),
                             )),
-                        TextButton(
-                          onPressed: () {},
-                          child: Text("View All Bids"),
-                        ),
+                        // TextButton(
+                        //   onPressed: () {},
+                        //   child: Text("View All Bids"),
+                        // ),
                       ]),
                     ),
                   ],
@@ -165,7 +165,7 @@ class _ItemCardState extends State<ItemCard> {
                   child:
                       Image.network(itemCardObject.item!.thumbUrl as String)),
               SizedBox(
-                height: 100,
+                height: 70,
                 child: Text(
                   itemCardObject.item!.name as String,
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
@@ -310,16 +310,31 @@ class _ItemCardState extends State<ItemCard> {
   }
 
   String getHighestBid(ItemCardObject item) {
-    if (item.highestBid == null) {
+    String? highestBid = item.item!.highestBid;
+    if (highestBid == null) {
       return "-";
     }
-    return item.highestBid as String;
+    if (highestBid.contains('.') && checkIfBidTooLong(highestBid)) {
+      return highestBid.substring(0, highestBid.lastIndexOf('.') + 3);
+    }
+    return highestBid;
+  }
+
+  bool checkIfBidTooLong(String highestBid) {
+    if (highestBid.substring(highestBid.lastIndexOf('.'), highestBid.length).length > 2) {
+      return true;
+    }
+    return false;
   }
 
   String getLowestAsk(ItemCardObject item) {
-    if (item.lowestAsk == null) {
+    String? lowestAsk = item.item!.lowestAsk;
+    if (lowestAsk == null) {
       return "-";
     }
-    return item.lowestAsk as String;
+    if (lowestAsk.contains('.') && checkIfBidTooLong(lowestAsk)) {
+      return lowestAsk.substring(0, lowestAsk.lastIndexOf('.') + 3);
+    }
+    return lowestAsk;
   }
 }

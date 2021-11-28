@@ -112,11 +112,29 @@ class _ItemInListState extends State<ItemInList> {
     return item.name as String;
   }
 
+  // String getLowestAsk(ItemObject item) {
+  //   if (item.lowestAsk == null) {
+  //     return "-";
+  //   }
+  //   return item.lowestAsk as String;
+  // }
+
   String getLowestAsk(ItemObject item) {
-    if (item.lowestAsk == null) {
+    String? lowestAsk = item.lowestAsk;
+    if (lowestAsk == null) {
       return "-";
     }
-    return item.lowestAsk as String;
+    if (lowestAsk.contains('.') && checkIfBidTooLong(lowestAsk)) {
+      return lowestAsk.substring(0, lowestAsk.lastIndexOf('.') + 3);
+    }
+    return lowestAsk;
+  }
+
+  bool checkIfBidTooLong(String highestBid) {
+    if (highestBid.substring(highestBid.lastIndexOf('.'), highestBid.length).length > 2) {
+      return true;
+    }
+    return false;
   }
 
   @override

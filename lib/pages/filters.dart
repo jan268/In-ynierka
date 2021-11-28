@@ -25,6 +25,10 @@ class _FilterPageState extends State<FilterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Filters"),
+        backgroundColor: Colors.tealAccent,
+      ),
       backgroundColor: Colors.white,
       body: Container(
         child: SafeArea(
@@ -244,6 +248,8 @@ class _FilterPageState extends State<FilterPage> {
                 filters.model = getValue(model.text);
                 filters.gender = getGender();
                 setPriceRange();
+                filters.used = true;
+
 
                 Navigator.push(context, MaterialPageRoute(builder: (context) => SearchPage(category: widget.category, filters: filters, )));
               },

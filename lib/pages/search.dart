@@ -67,6 +67,7 @@ class _SearchPageState extends State<SearchPage> {
                       onPressed: () {
                         // odpalenie wyszukania
                         setState(() {
+                          widget.filters.used = true;
                           widget.filters.name = myController.text;
                         });
                       },
@@ -74,13 +75,22 @@ class _SearchPageState extends State<SearchPage> {
                           Icons.search
                       ),
                     ),
+                    buildFilterButton(context),
                     IconButton(
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => FilterPage(category: widget.category,)));
-                      },
-                      icon: Icon(
-                          Icons.settings
-                      ),
+                        onPressed: () {
+                          setState(() {
+                             widget.filters.brand = '%20';
+                             widget.filters.make = '%20';
+                             widget.filters.name = '%20';
+                             widget.filters.model = '%20';
+                             widget.filters.gender = '%20';
+                             widget.filters.minPrice = '%20';
+                             widget.filters.maxPrice = '%20';
+                             widget.filters.used = false;
+                             myController.clear();
+                          });
+                        },
+                        icon: Icon(Icons.clear)
                     )
                   ],
                 ),
@@ -98,6 +108,28 @@ class _SearchPageState extends State<SearchPage> {
         ),
       ),
     );
+  }
+
+  IconButton buildFilterButton(BuildContext context) {
+    if(widget.filters.used) {
+      return IconButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => FilterPage(category: widget.category,)));
+        },
+        icon: Icon(
+          Icons.settings,
+          color: Colors.tealAccent,
+        ),
+      );
+    }
+    return IconButton(
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => FilterPage(category: widget.category,)));
+                    },
+                    icon: Icon(
+                        Icons.settings,
+                    ),
+                  );
   }
 
   Widget getNavBar(int index) {

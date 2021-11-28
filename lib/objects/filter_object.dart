@@ -7,6 +7,7 @@ class FilterObject {
   String? gender = '%20';
   String? minPrice = '%20';
   String? maxPrice = '%20';
+  bool used = false;
 
   FilterObject.name(this.brand, this.category, this.make, this.name, this.model,
       this.gender, this.minPrice, this.maxPrice);

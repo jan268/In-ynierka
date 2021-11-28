@@ -3,15 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:net_market/objects/account_object.dart';
 import 'package:net_market/objects/decoded_token_object.dart';
 import 'package:net_market/objects/filter_object.dart';
+import 'package:net_market/pages/login_screen.dart';
 import 'package:net_market/pages/profile.dart';
 import 'package:net_market/pages/search.dart';
 import 'package:net_market/pages/settings.dart';
 import 'package:net_market/pages/bids.dart';
 import 'package:net_market/pages/transactions.dart';
 import 'package:net_market/utilities/basic_icons_icons.dart';
+import 'package:net_market/utilities/user_secure_storage.dart';
 
 import 'asks.dart';
 import 'home.dart';
+import 'loading.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({Key? key}) : super(key: key);
@@ -92,6 +95,17 @@ class _AccountPageState extends State<AccountPage> {
                     subtitle: Text("Change password"),
                   )
               ),
+              Card(
+                  child: ListTile(
+                    onTap: () {
+                      UserSecureStorage.setJwt('');
+                      navigateToLogin(context);
+                    },
+                    leading: Icon(Icons.logout),
+                    title: Text("Log out"),
+                    subtitle: Text("You will be logged out"),
+                  )
+              ),
             ],
           )
         ),
@@ -104,6 +118,7 @@ class _AccountPageState extends State<AccountPage> {
   Future<dynamic> navigateToAsks(BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (context) => AsksPage()));
   Future<dynamic> navigateToTransactions(BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (context) => TransactionsPage()));
   Future<dynamic> navigateToSettings(BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
+  Future<dynamic> navigateToLogin(BuildContext context) => Navigator.pushNamedAndRemoveUntil(context, "/", (r) => false);
 
   @override
   void initState() {

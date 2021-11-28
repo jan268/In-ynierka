@@ -103,10 +103,21 @@ class _ItemInListColumnState extends State<ItemInListColumn> {
   }
 
   String getLowestAsk(ItemObject item) {
-    if (item.lowestAsk == null) {
+    String? lowestAsk = item.lowestAsk;
+    if (lowestAsk == null) {
       return "-";
     }
-    return item.lowestAsk as String;
+    if (lowestAsk.contains('.') && checkIfBidTooLong(lowestAsk)) {
+      return lowestAsk.substring(0, lowestAsk.lastIndexOf('.') + 3);
+    }
+    return lowestAsk;
+  }
+
+  bool checkIfBidTooLong(String highestBid) {
+    if (highestBid.substring(highestBid.lastIndexOf('.'), highestBid.length).length > 2) {
+      return true;
+    }
+    return false;
   }
 
   String getName(ItemObject item) {
