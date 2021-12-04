@@ -20,6 +20,9 @@ class _BuyItemState extends State<BuyItem> {
   final myController = TextEditingController();
   bool buyNow = true;
   int toggleIndex = 1;
+  double feeValue = 0;
+  String feeString = '';
+  String totalString = '';
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +56,7 @@ class _BuyItemState extends State<BuyItem> {
                             color: Colors.grey,
                           ),
                           Text(
-                            "Lowest Ask : ${getLowestAsk(item.item!)}",
+                            "Lowest Ask : ${getLowestAsk(item.item!)}USD",
                             style: TextStyle(
                                 fontSize: 12, fontWeight: FontWeight.bold),
                           ),
@@ -92,9 +95,13 @@ class _BuyItemState extends State<BuyItem> {
                     if (buyNow == false) {
                       toggleIndex = 0;
                       myController.clear();
+                      feeString = '';
+                      totalString = '';
                     } else {
                       toggleIndex = 1;
                       myController.text = getLowestAsk(item.item!);
+                      feeString = getFeePrice();
+                      totalString = getTotalPrice();
                     }
                   });
                 },
@@ -117,6 +124,13 @@ class _BuyItemState extends State<BuyItem> {
                         child: TextField(
                           enabled: !buyNow,
                           controller: myController,
+                          keyboardType: TextInputType.number,
+                          onSubmitted: (String value) {
+                            setState(() {
+                              feeString = getFeePrice();
+                              totalString = getTotalPrice();
+                            });
+                          },
                         ),
                       ),
                     ],
@@ -138,7 +152,7 @@ class _BuyItemState extends State<BuyItem> {
                         width: 20,
                       ),
                       Text(
-                        "3.00",
+                        feeString,
                         style: TextStyle(fontSize: 18),
                       ),
                     ],
@@ -160,7 +174,7 @@ class _BuyItemState extends State<BuyItem> {
                         width: 20,
                       ),
                       Text(
-                        "33.00",
+                        getTotalPrice(),
                         style: TextStyle(fontSize: 18),
                       ),
                     ],
@@ -172,22 +186,55 @@ class _BuyItemState extends State<BuyItem> {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        child: RaisedButton(
-          onPressed: () {
-            if (buyNow == true) {
-              buyItemNow();
-              print("Buy for ${myController.text}");
-              // tu bedzie akcja dla buy z cena z tego text
-            } else {
-              print("Place bid for ${myController.text}");
-              placeBid();
-            }
-          },
-          child: Text("Next"),
-          color: Colors.green[800],
-        ),
+        child: createActionButton(),
       ),
     );
+  }
+
+  RaisedButton createActionButton() {
+    if(totalString.isEmpty || totalString == '' || totalString == "--") {
+      return RaisedButton(
+        onPressed: () {},
+        child: Text("Next"),
+        color: Colors.grey[400],
+      );
+    }
+    return RaisedButton(
+        onPressed: () {
+          if (buyNow == true) {
+            buyItemNow();
+            print("Buy for ${myController.text}");
+            // tu bedzie akcja dla buy z cena z tego text
+          } else {
+            print("Place bid for ${myController.text}");
+            placeBid();
+          }
+        },
+        child: Text("Next"),
+        color: Colors.green[800],
+      );
+  }
+
+  String getTotalPrice() {
+    if(myController.text.isEmpty || myController.text == "--") {
+      return "";
+    }
+    double value = double.parse(myController.text);
+    double price = value + feeValue;
+    return price.toString();
+  }
+
+  String getFeePrice() {
+    if(myController.text.isEmpty || myController.text == "--") {
+      return "";
+    }
+    double value = double.parse(myController.text);
+    double fee = (value * 0.1);
+    setState(() {
+      feeValue = fee;
+    });
+    var lastIndexOf = fee.toString().lastIndexOf('.');
+    return fee.toString().substring(0, lastIndexOf + 3);
   }
 
   String getLowestAsk(ItemObject item) {
@@ -198,7 +245,7 @@ class _BuyItemState extends State<BuyItem> {
     if (price.contains('.') && checkIfBidTooLong(price)) {
       price = price.substring(0, price.lastIndexOf('.') + 3);
     }
-    return price + "USD";
+    return price;
   }
 
   String getHighestBid(ItemObject item) {

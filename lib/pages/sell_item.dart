@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:net_market/objects/item_card_object.dart';
@@ -20,6 +22,9 @@ class _SellItemState extends State<SellItem> {
   final myController = TextEditingController();
   bool buyNow = true;
   int toggleIndex = 1;
+  double feeValue = 0;
+  String feeString = '';
+  String totalString = '';
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +48,7 @@ class _SellItemState extends State<SellItem> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Highest Bid: ${getHighestBid(item.item!)}",
+                            "Highest Bid: ${getHighestBid(item.item!)}USD",
                             style: TextStyle(
                                 fontSize: 12, fontWeight: FontWeight.bold),
                           ),
@@ -92,9 +97,13 @@ class _SellItemState extends State<SellItem> {
                     if (buyNow == false) {
                       toggleIndex = 0;
                       myController.clear();
+                      feeString = '';
+                      totalString = '';
                     } else {
                       toggleIndex = 1;
                       myController.text = getHighestBid(item.item!);
+                      feeString = getFeePrice();
+                      totalString = getTotalPrice();
                     }
                   });
                 },
@@ -117,6 +126,13 @@ class _SellItemState extends State<SellItem> {
                         child: TextField(
                           enabled: !buyNow,
                           controller: myController,
+                          keyboardType: TextInputType.number,
+                          onSubmitted: (String value) {
+                            setState(() {
+                              feeString = getFeePrice();
+                              totalString = getTotalPrice();
+                            });
+                          },
                         ),
                       ),
                     ],
@@ -136,7 +152,7 @@ class _SellItemState extends State<SellItem> {
                       ),
                       SizedBox(width: 20,),
                       Text(
-                          "3.00",
+                          feeString,
                           style: TextStyle(fontSize: 18),),
                     ],
                   ),
@@ -155,7 +171,7 @@ class _SellItemState extends State<SellItem> {
                       ),
                       SizedBox(width: 20,),
                       Text(
-                        "33.00",
+                        getTotalPrice(),
                         style: TextStyle(fontSize: 18),),
                     ],
                   ),
@@ -166,23 +182,34 @@ class _SellItemState extends State<SellItem> {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        child: RaisedButton(
-          onPressed: () {
-            if (buyNow == true) {
-              print("Buy for ${myController.text}");
-              sellItemNow();
-              // tu bedzie akcja dla buy z cena z tego text
-            } else {
-              print("Place bid for ${myController.text}");
-              placeAsk();
-              // tu bedzie akcja dla Place Bid z cena z tego text
-            }
-          },
-          child: Text("Next"),
-          color: Colors.red[800],
-        ),
+        child: createActionButton(),
       ),
     );
+  }
+
+  RaisedButton createActionButton() {
+    if(totalString.isEmpty || totalString == '' || totalString == "--") {
+      return RaisedButton(
+        onPressed: () {},
+        child: Text("Next"),
+        color: Colors.grey[400],
+      );
+    }
+    return RaisedButton(
+        onPressed: () {
+          if (buyNow == true) {
+            print("Buy for ${myController.text}");
+            sellItemNowNotification();
+            // tu bedzie akcja dla buy z cena z tego text
+          } else {
+            print("Place bid for ${myController.text}");
+            placeAskNotification();
+            // tu bedzie akcja dla Place Bid z cena z tego text
+          }
+        },
+        child: Text("Next"),
+        color: Colors.red[800],
+      );
   }
 
   String getLowestAsk(ItemObject item) {
@@ -204,7 +231,29 @@ class _SellItemState extends State<SellItem> {
     if (price.contains('.') && checkIfBidTooLong(price)) {
       price =  price.substring(0, price.lastIndexOf('.') + 3);
     }
-    return price + "USD";
+    return price;
+  }
+
+  String getTotalPrice() {
+    if(myController.text.isEmpty) {
+      return "";
+    }
+    double value = double.parse(myController.text);
+    double price = value + feeValue;
+    return price.toString();
+  }
+
+  String getFeePrice() {
+    if(myController.text.isEmpty) {
+      return "";
+    }
+    double value = double.parse(myController.text);
+    double fee = (value * 0.1);
+    setState(() {
+      feeValue = fee;
+    });
+    var lastIndexOf = fee.toString().lastIndexOf('.');
+    return fee.toString().substring(0, lastIndexOf + 3);
   }
 
   bool checkIfBidTooLong(String highestBid) {
@@ -218,7 +267,7 @@ class _SellItemState extends State<SellItem> {
     return itemCardObject.item!.name as String;
   }
 
-  failToSellItem() {
+  failToSellItemNotification() {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -244,7 +293,7 @@ class _SellItemState extends State<SellItem> {
         });
   }
 
-  placeAsk() {
+  placeAskNotification() {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -272,7 +321,7 @@ class _SellItemState extends State<SellItem> {
         });
   }
 
-  sellItemNow() {
+  sellItemNowNotification() {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -304,5 +353,7 @@ class _SellItemState extends State<SellItem> {
   void initState() {
     super.initState();
     myController.text = getHighestBid(item.item!);
+    totalString = getTotalPrice();
+    feeString = getFeePrice();
   }
 }
