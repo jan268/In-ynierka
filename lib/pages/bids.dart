@@ -104,12 +104,12 @@ class _BidsPageState extends State<BidsPage> {
                                             height: 30,
                                             width: 50,
                                             child: Center(
-                                                child: Text(getNumber(item.item!.lowestAsk!)))),
+                                                child: Text(getNumber(checkForNull(item.item!.lowestAsk))))),
                                         SizedBox(
                                             height: 30,
                                             width: 50,
                                             child: Center(
-                                                child: Text(getNumber(item.item!.highestBid!)))),
+                                                child: Text(getNumber(checkForNull(item.item!.highestBid))))),
                                         SizedBox(
                                             height: 30,
                                             width: 50,
@@ -143,6 +143,13 @@ class _BidsPageState extends State<BidsPage> {
   Future<List<BidObject>> getData() async {
     List<BidObject> bids = await BidObject.getAsks();
     return bids;
+  }
+
+  String checkForNull(String? value) {
+    if(value == null) {
+      return "--";
+    }
+    return value;
   }
 
   String getNumber(String number) {

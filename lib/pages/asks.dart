@@ -125,12 +125,12 @@ class _AsksPageState extends State<AsksPage> {
                                         height: 30,
                                         width: 50,
                                         child: Center(
-                                            child: Text(getNumber(item.item!.lowestAsk!)))),
+                                            child: Text(getNumber(checkForNull(item.item!.lowestAsk))))),
                                     SizedBox(
                                         height: 30,
                                         width: 50,
                                         child: Center(
-                                            child: Text(getNumber(item.item!.highestBid!)))),
+                                            child: Text(getNumber(checkForNull(item.item!.highestBid))))),
                                     SizedBox(
                                         height: 30,
                                         width: 50,
@@ -270,6 +270,13 @@ class _AsksPageState extends State<AsksPage> {
             ),
           );
         });
+  }
+
+  String checkForNull(String? value) {
+    if(value == null) {
+      return "--";
+    }
+    return value;
   }
 
   @override

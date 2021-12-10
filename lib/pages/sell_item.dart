@@ -1,9 +1,13 @@
+import 'dart:convert';
 import 'dart:ffi';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:net_market/objects/item_card_object.dart';
 import 'package:net_market/objects/item_object.dart';
+import 'package:net_market/utilities/user_secure_storage.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 class SellItem extends StatefulWidget {
@@ -152,7 +156,7 @@ class _SellItemState extends State<SellItem> {
                       ),
                       SizedBox(width: 20,),
                       Text(
-                          feeString,
+                          getFeePrice(),
                           style: TextStyle(fontSize: 18),),
                     ],
                   ),
@@ -198,12 +202,14 @@ class _SellItemState extends State<SellItem> {
     return RaisedButton(
         onPressed: () {
           if (buyNow == true) {
-            print("Buy for ${myController.text}");
-            sellItemNowNotification();
+            sellItemNow();
+            // print("Buy for ${myController.text}");
+            // sellItemNowNotification();
             // tu bedzie akcja dla buy z cena z tego text
           } else {
-            print("Place bid for ${myController.text}");
-            placeAskNotification();
+            placeAskNow();
+            // print("Place bid for ${myController.text}");
+            // placeAskNotification();
             // tu bedzie akcja dla Place Bid z cena z tego text
           }
         },
@@ -235,7 +241,7 @@ class _SellItemState extends State<SellItem> {
   }
 
   String getTotalPrice() {
-    if(myController.text.isEmpty) {
+    if(myController.text.isEmpty || myController.text == "--") {
       return "";
     }
     double value = double.parse(myController.text);
@@ -244,7 +250,7 @@ class _SellItemState extends State<SellItem> {
   }
 
   String getFeePrice() {
-    if(myController.text.isEmpty) {
+    if(myController.text.isEmpty || myController.text == "--") {
       return "";
     }
     double value = double.parse(myController.text);
@@ -253,6 +259,9 @@ class _SellItemState extends State<SellItem> {
       feeValue = fee;
     });
     var lastIndexOf = fee.toString().lastIndexOf('.');
+    if((lastIndexOf + 3) > fee.toString().length) {
+      return fee.toString();
+    }
     return fee.toString().substring(0, lastIndexOf + 3);
   }
 
@@ -349,11 +358,53 @@ class _SellItemState extends State<SellItem> {
         });
   }
 
+  Future<void> placeAskNow() async {
+    Response response = await sendRequest();
+    if(response.statusCode == 200) {
+      placeAskNotification();
+    } else {
+      failToSellItemNotification();
+    }
+  }
+
+  Future<void> sellItemNow() async {
+    Response response = await sendRequest();
+    if(response.statusCode == 200) {
+      sellItemNowNotification();
+    } else {
+      print(response.body);
+      failToSellItemNotification();
+    }
+  }
+
+  Future<Response> sendRequest() async {
+    String? token = await UserSecureStorage.getJwt();
+    String jwt =  "Bearer " + token!.substring(token.lastIndexOf(':') + 2, token.length-2);
+    print(item.item!.id);
+    print(jwt);
+    var body = {
+      "itemId": "${item.item!.id}",
+      "size": "${widget.size}",
+      "price": "${myController.text}"
+    };
+    var response = await post(Uri.parse("http://netmarket-api.eu-central-1.elasticbeanstalk.com/api/asks"),
+        headers: {
+          "Authorization": jwt,
+          "accept": "*/*",
+          "Content-Type": "application/json"
+        },
+        body: json.encode(body),
+        encoding: Encoding.getByName("utf-8")
+    );
+    print(body);
+    print(response.statusCode);
+    print(response.body);
+    return response;
+  }
+
   @override
   void initState() {
     super.initState();
     myController.text = getHighestBid(item.item!);
-    totalString = getTotalPrice();
-    feeString = getFeePrice();
   }
 }

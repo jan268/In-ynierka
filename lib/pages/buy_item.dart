@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:net_market/objects/item_card_object.dart';
 import 'package:net_market/objects/item_object.dart';
+import 'package:net_market/utilities/user_secure_storage.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 class BuyItem extends StatefulWidget {
@@ -152,7 +156,7 @@ class _BuyItemState extends State<BuyItem> {
                         width: 20,
                       ),
                       Text(
-                        feeString,
+                        getFeePrice(),
                         style: TextStyle(fontSize: 18),
                       ),
                     ],
@@ -203,11 +207,13 @@ class _BuyItemState extends State<BuyItem> {
         onPressed: () {
           if (buyNow == true) {
             buyItemNow();
-            print("Buy for ${myController.text}");
+            // buyItemNowNotification();
+            // print("Buy for ${myController.text}");
             // tu bedzie akcja dla buy z cena z tego text
           } else {
-            print("Place bid for ${myController.text}");
-            placeBid();
+            placeBidNow();
+            // print("Place bid for ${myController.text}");
+            // placeBidNotification();
           }
         },
         child: Text("Next"),
@@ -234,6 +240,9 @@ class _BuyItemState extends State<BuyItem> {
       feeValue = fee;
     });
     var lastIndexOf = fee.toString().lastIndexOf('.');
+    if((lastIndexOf + 3) > fee.toString().length) {
+      return fee.toString();
+    }
     return fee.toString().substring(0, lastIndexOf + 3);
   }
 
@@ -279,7 +288,7 @@ class _BuyItemState extends State<BuyItem> {
     return itemCardObject.item!.name as String;
   }
 
-  failToBuyItem() {
+  failToBuyItemNotification() {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -305,7 +314,7 @@ class _BuyItemState extends State<BuyItem> {
         });
   }
 
-  placeBid() {
+  placeBidNotification() {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -333,7 +342,7 @@ class _BuyItemState extends State<BuyItem> {
         });
   }
 
-  buyItemNow() {
+  buyItemNowNotification() {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -359,5 +368,42 @@ class _BuyItemState extends State<BuyItem> {
             ],
           );
         });
+  }
+
+  Future<void> placeBidNow() async {
+    Response response = await sendRequest();
+    if(response.statusCode == 200) {
+      placeBidNotification();
+    } else {
+      failToBuyItemNotification();
+    }
+  }
+
+  Future<void> buyItemNow() async {
+    Response response = await sendRequest();
+    if(response.statusCode == 200) {
+      buyItemNowNotification();
+    } else {
+      failToBuyItemNotification();
+    }
+  }
+
+  Future<Response> sendRequest() async {
+    String? token = await UserSecureStorage.getJwt();
+    String jwt =  "Bearer " + token!.substring(token.lastIndexOf(':') + 2, token.length-2);
+    var body = {
+      "itemId": item.item!.id,
+      "size": widget.size,
+      "price": myController.text
+    };
+    var response = await post(Uri.parse("http://netmarket-api.eu-central-1.elasticbeanstalk.com/api/bids"),
+        headers: {
+          "Authorization": jwt,
+          "accept": "*/*",
+          "Content-Type": "application/json"
+        },
+        body: json.encode(body),
+        encoding: Encoding.getByName("utf-8"));
+    return response;
   }
 }
