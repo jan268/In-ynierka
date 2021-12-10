@@ -132,6 +132,9 @@ class _LoginScreenState extends State<LoginScreen> {
         encoding: Encoding.getByName("utf-8"));
     if(response.statusCode == 200) {
         Navigator.push(context, MaterialPageRoute(builder: (context) => Home(category: 'SNEAKERS',)));
+        print(response.body);
+        String token = response.body.substring(response.body.lastIndexOf(':') + 2, response.body.length-2);
+        print(token);
         await UserSecureStorage.setJwt(response.body);
     } // tu trzeba zrobic obsluge tego, ze sie nie udalo zalogowac
   }

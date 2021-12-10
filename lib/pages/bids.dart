@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:net_market/mocks/mocked_lists.dart';
 import 'package:net_market/objects/bid_object.dart';
 import 'package:net_market/objects/filter_object.dart';
 import 'package:net_market/pages/search.dart';
@@ -15,7 +16,7 @@ class BidsPage extends StatefulWidget {
 
 class _BidsPageState extends State<BidsPage> {
 
-  late BidObject bidObject;
+  late List<BidObject> bidObjects;
 
   @override
   Widget build(BuildContext context) {
@@ -44,28 +45,143 @@ class _BidsPageState extends State<BidsPage> {
                       ],
                     ),
                   ),
-                  InkWell(
-                    onTap: editDeletePopUp,
-                    child: Card(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          SizedBox(height: 30, width: 100, child: Center(child: Text("Jordan 1 Retro High Tie Dye (W)"))),
-                          SizedBox(height: 30, width: 40, child: Center(child: Text("120.00"))),
-                          SizedBox(height: 30, width: 40, child: Center(child: Text("12.00"))),
-                          SizedBox(height: 30, width: 40, child: Center(child: Text("14"))),
-                          SizedBox(height: 30, width: 50, child: Center(child: Text("No asks"))),
-                          SizedBox(height: 30, width: 50, child: Center(child: Text("120.00"))),
-                          SizedBox(height: 30, width: 50, child: Center(child: Text("Dec 27, 2021"))),
-                        ],
-                      ),
+                  SizedBox(
+                    height: 300,
+                    width: MediaQuery.of(context).size.width,
+                    child: FutureBuilder(
+                      builder: (ctx, snapshot) {
+                        // Checking if future is resolved or not
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          // If we got an error
+                          if (snapshot.hasError) {
+                            return Center(
+                              child: Text(
+                                '${snapshot.error} occured',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            );
+
+                            // if we got our data
+                          }else if (snapshot.hasData) {
+                            // Extracting data from snapshot object
+                            List<BidObject>? items =
+                            snapshot.data as List<BidObject>?;
+                            if(items!.isEmpty) {
+                              return SizedBox();
+                            }
+                            return ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              itemCount: items.length,
+                              itemBuilder: (context, index) {
+                                BidObject item = items[index];
+                                return InkWell(
+                                  onTap: editDeletePopUp,
+                                  child: Card(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        SizedBox(
+                                            height: 30,
+                                            width: 100,
+                                            child: Center(
+                                                child: Text(item.item!.name!))),
+                                        SizedBox(
+                                            height: 30,
+                                            width: 40,
+                                            child: Center(child: Text(getNumber(item.price!)))),
+                                        SizedBox(
+                                            height: 30,
+                                            width: 40,
+                                            child:
+                                            Center(child: Text(getNumber(item.buyerFee!)))),
+                                        SizedBox(
+                                            height: 30,
+                                            width: 40,
+                                            child: Center(
+                                                child: Text(item.size!.value!))),
+                                        SizedBox(
+                                            height: 30,
+                                            width: 50,
+                                            child: Center(
+                                                child: Text(getNumber(item.item!.lowestAsk!)))),
+                                        SizedBox(
+                                            height: 30,
+                                            width: 50,
+                                            child: Center(
+                                                child: Text(getNumber(item.item!.highestBid!)))),
+                                        SizedBox(
+                                            height: 30,
+                                            width: 50,
+                                            child:
+                                            Center(child: Text(getExpirationDate(item.expires!)))),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          }
+                        }
+
+                        // Displaying LoadingSpinner to indicate waiting state
+                        return MockedLists.loadingWidget();
+                      },
+
+                      // Future that needs to be resolved
+                      // inorder to display something on the Canvas
+                      future: getData(),
                     ),
-                  ),
+                  )
                 ],
               ),
             )
         )
     );
+  }
+
+  Future<List<BidObject>> getData() async {
+    List<BidObject> bids = await BidObject.getAsks();
+    return bids;
+  }
+
+  String getNumber(String number) {
+      return number.substring(0, number.lastIndexOf(".") + 3);
+  }
+
+  getExpirationDate(String date) {
+    var lastIndexOfT = date.lastIndexOf("T");
+    var years = date.substring(0, lastIndexOfT);
+    var hours = date.substring(lastIndexOfT + 1, lastIndexOfT + 9);
+    return years + hours;
+  }
+
+  String getName(String name) {
+    if (name.length > 23) {
+      var substring = name.substring(0, 23);
+      return substring + "...";
+    } else
+      return name;
+  }
+
+  InkWell buildInkWell() {
+    return InkWell(
+                  onTap: editDeletePopUp,
+                  child: Card(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        SizedBox(height: 30, width: 100, child: Center(child: Text("Jordan 1 Retro High Tie Dye (W)"))),
+                        SizedBox(height: 30, width: 40, child: Center(child: Text("120.00"))),
+                        SizedBox(height: 30, width: 40, child: Center(child: Text("12.00"))),
+                        SizedBox(height: 30, width: 40, child: Center(child: Text("14"))),
+                        SizedBox(height: 30, width: 50, child: Center(child: Text("No asks"))),
+                        SizedBox(height: 30, width: 50, child: Center(child: Text("120.00"))),
+                        SizedBox(height: 30, width: 50, child: Center(child: Text("Dec 27, 2021"))),
+                      ],
+                    ),
+                  ),
+                );
   }
 
   Widget getNavBar(int index) {
@@ -153,14 +269,6 @@ class _BidsPageState extends State<BidsPage> {
     }
   }
 
-
-  String getName(String name) {
-    if(name.length > 23) {
-      var substring = name.substring(0, 23);
-      return substring + "...";
-    }
-    else return name;
-  }
   headers() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
