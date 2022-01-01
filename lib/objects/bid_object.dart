@@ -56,4 +56,19 @@ class BidObject {
 
     return items;
   }
+
+  static Future<bool> deleteBid(String id) async {
+    String? token = await UserSecureStorage.getJwt();
+    String jwt =  "Bearer " + token!.substring(token.lastIndexOf(':') + 2, token.length-2);
+    Response response = await delete(Uri.parse("http://netmarket-api.eu-central-1.elasticbeanstalk.com/api/bids/$id"),
+        headers: {
+          "Authorization": jwt,
+          "accept": "*/*",
+          "Content-Type": "application/json"
+        });
+    if(response.statusCode == 200) {
+      return true;
+    }
+    return false;
+  }
 }

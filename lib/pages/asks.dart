@@ -54,13 +54,13 @@ class _AsksPageState extends State<AsksPage> {
                         height: 30,
                         width: 50,
                         child: Center(child: Text("Lowest Ask"))),
+                    // SizedBox(
+                    //     height: 30,
+                    //     width: 50,
+                    //     child: Center(child: Text("Highest Bid"))),
                     SizedBox(
                         height: 30,
-                        width: 50,
-                        child: Center(child: Text("Highest Bid"))),
-                    SizedBox(
-                        height: 30,
-                        width: 50,
+                        width: 75,
                         child: Center(child: Text("Expires"))),
                   ],
                 ),
@@ -95,8 +95,11 @@ class _AsksPageState extends State<AsksPage> {
                           itemCount: items.length,
                           itemBuilder: (context, index) {
                             AskObject item = items[index];
+                            print('ID: ${item.id}');
                             return InkWell(
-                              onTap: editDeletePopUp,
+                              onTap: () {
+                                editDeletePopUp(item.id!);
+                              },
                               child: Card(
                                 child: Row(
                                   mainAxisAlignment:
@@ -126,14 +129,14 @@ class _AsksPageState extends State<AsksPage> {
                                         width: 50,
                                         child: Center(
                                             child: Text(getNumber(checkForNull(item.item!.lowestAsk))))),
+                                    // SizedBox(
+                                    //     height: 30,
+                                    //     width: 50,
+                                    //     child: Center(
+                                    //         child: Text(getNumber(checkForNull(item.item!.highestBid))))),
                                     SizedBox(
                                         height: 30,
-                                        width: 50,
-                                        child: Center(
-                                            child: Text(getNumber(checkForNull(item.item!.highestBid))))),
-                                    SizedBox(
-                                        height: 30,
-                                        width: 50,
+                                        width: 75,
                                         child:
                                             Center(child: Text(getExpirationDate(item.expires!)))),
                                   ],
@@ -166,35 +169,35 @@ class _AsksPageState extends State<AsksPage> {
       return years + hours;
   }
 
-  InkWell buildInkWell() {
-    return InkWell(
-      onTap: editDeletePopUp,
-      child: Card(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            SizedBox(
-                height: 30,
-                width: 100,
-                child: Center(child: Text("Jordan 1 Retro High Tie Dye (W)"))),
-            SizedBox(
-                height: 30, width: 40, child: Center(child: Text("120.00"))),
-            SizedBox(
-                height: 30, width: 40, child: Center(child: Text("12.00"))),
-            SizedBox(height: 30, width: 40, child: Center(child: Text("14"))),
-            SizedBox(
-                height: 30, width: 50, child: Center(child: Text("No asks"))),
-            SizedBox(
-                height: 30, width: 50, child: Center(child: Text("120.00"))),
-            SizedBox(
-                height: 30,
-                width: 50,
-                child: Center(child: Text("Dec 27, 2021"))),
-          ],
-        ),
-      ),
-    );
-  }
+  // InkWell buildInkWell() {
+  //   return InkWell(
+  //     onTap: editDeletePopUp,
+  //     child: Card(
+  //       child: Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //         children: [
+  //           SizedBox(
+  //               height: 30,
+  //               width: 100,
+  //               child: Center(child: Text("Jordan 1 Retro High Tie Dye (W)"))),
+  //           SizedBox(
+  //               height: 30, width: 40, child: Center(child: Text("120.00"))),
+  //           SizedBox(
+  //               height: 30, width: 40, child: Center(child: Text("12.00"))),
+  //           SizedBox(height: 30, width: 40, child: Center(child: Text("14"))),
+  //           SizedBox(
+  //               height: 30, width: 50, child: Center(child: Text("No asks"))),
+  //           SizedBox(
+  //               height: 30, width: 50, child: Center(child: Text("120.00"))),
+  //           SizedBox(
+  //               height: 30,
+  //               width: 50,
+  //               child: Center(child: Text("Dec 27, 2021"))),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget getNavBar(int index) {
     return BottomNavigationBar(
@@ -228,7 +231,15 @@ class _AsksPageState extends State<AsksPage> {
     return asks;
   }
 
-  editDeletePopUp() {
+  Future<void> deleteAsk(String id) async {
+    bool status = await AskObject.deleteAsk(id);
+    if(status) {
+      setState(() {
+      });
+    }
+  }
+
+  Future editDeletePopUp(String id) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -247,7 +258,10 @@ class _AsksPageState extends State<AsksPage> {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () {}, // tu do usuwania
+                      onPressed: () {
+                          deleteAsk(id);
+                          Navigator.pop(context);
+                      },
                       child: Text("Delete"),
                       style: ButtonStyle(
                         backgroundColor:

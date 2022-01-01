@@ -39,9 +39,9 @@ class _BidsPageState extends State<BidsPage> {
                         SizedBox(height: 30, width: 40, child: Center(child: Text("Price"))),
                         SizedBox(height: 30, width: 40, child: Center(child: Text("Fee"))),
                         SizedBox(height: 30, width: 40, child: Center(child: Text("Size"))),
-                        SizedBox(height: 30, width: 50, child: Center(child: Text("Lowest Ask"))),
+                        // SizedBox(height: 30, width: 50, child: Center(child: Text("Lowest Ask"))),
                         SizedBox(height: 30, width: 50, child: Center(child: Text("Highest Bid"))),
-                        SizedBox(height: 30, width: 50, child: Center(child: Text("Expires"))),
+                        SizedBox(height: 30, width: 75, child: Center(child: Text("Expires"))),
                       ],
                     ),
                   ),
@@ -75,7 +75,9 @@ class _BidsPageState extends State<BidsPage> {
                               itemBuilder: (context, index) {
                                 BidObject item = items[index];
                                 return InkWell(
-                                  onTap: editDeletePopUp,
+                                  onTap: () {
+                                    editDeletePopUp(item.id!);
+                                    },
                                   child: Card(
                                     child: Row(
                                       mainAxisAlignment:
@@ -100,11 +102,11 @@ class _BidsPageState extends State<BidsPage> {
                                             width: 40,
                                             child: Center(
                                                 child: Text(item.size!.value!))),
-                                        SizedBox(
-                                            height: 30,
-                                            width: 50,
-                                            child: Center(
-                                                child: Text(getNumber(checkForNull(item.item!.lowestAsk))))),
+                                        // SizedBox(
+                                        //     height: 30,
+                                        //     width: 50,
+                                        //     child: Center(
+                                        //         child: Text(getNumber(checkForNull(item.item!.lowestAsk))))),
                                         SizedBox(
                                             height: 30,
                                             width: 50,
@@ -112,7 +114,7 @@ class _BidsPageState extends State<BidsPage> {
                                                 child: Text(getNumber(checkForNull(item.item!.highestBid))))),
                                         SizedBox(
                                             height: 30,
-                                            width: 50,
+                                            width: 75,
                                             child:
                                             Center(child: Text(getExpirationDate(item.expires!)))),
                                       ],
@@ -171,25 +173,25 @@ class _BidsPageState extends State<BidsPage> {
       return name;
   }
 
-  InkWell buildInkWell() {
-    return InkWell(
-                  onTap: editDeletePopUp,
-                  child: Card(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        SizedBox(height: 30, width: 100, child: Center(child: Text("Jordan 1 Retro High Tie Dye (W)"))),
-                        SizedBox(height: 30, width: 40, child: Center(child: Text("120.00"))),
-                        SizedBox(height: 30, width: 40, child: Center(child: Text("12.00"))),
-                        SizedBox(height: 30, width: 40, child: Center(child: Text("14"))),
-                        SizedBox(height: 30, width: 50, child: Center(child: Text("No asks"))),
-                        SizedBox(height: 30, width: 50, child: Center(child: Text("120.00"))),
-                        SizedBox(height: 30, width: 50, child: Center(child: Text("Dec 27, 2021"))),
-                      ],
-                    ),
-                  ),
-                );
-  }
+  // InkWell buildInkWell() {
+  //   return InkWell(
+  //                 onTap: editDeletePopUp,
+  //                 child: Card(
+  //                   child: Row(
+  //                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //                     children: [
+  //                       SizedBox(height: 30, width: 100, child: Center(child: Text("Jordan 1 Retro High Tie Dye (W)"))),
+  //                       SizedBox(height: 30, width: 40, child: Center(child: Text("120.00"))),
+  //                       SizedBox(height: 30, width: 40, child: Center(child: Text("12.00"))),
+  //                       SizedBox(height: 30, width: 40, child: Center(child: Text("14"))),
+  //                       SizedBox(height: 30, width: 50, child: Center(child: Text("No asks"))),
+  //                       SizedBox(height: 30, width: 50, child: Center(child: Text("120.00"))),
+  //                       SizedBox(height: 30, width: 50, child: Center(child: Text("Dec 27, 2021"))),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               );
+  // }
 
   Widget getNavBar(int index) {
     return BottomNavigationBar(
@@ -218,7 +220,15 @@ class _BidsPageState extends State<BidsPage> {
     );
   }
 
-  editDeletePopUp() {
+  Future<void> deleteBid(String id) async {
+    bool status = await BidObject.deleteBid(id);
+    if(status) {
+      setState(() {
+      });
+    }
+  }
+
+  Future editDeletePopUp(String id) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -236,7 +246,10 @@ class _BidsPageState extends State<BidsPage> {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () {}, // tu do usuwania
+                      onPressed: () {
+                        deleteBid(id);
+                        Navigator.pop(context);
+                      }, // tu do usuwania
                       child: Text("Delete"),
                       style : ButtonStyle(
                         backgroundColor:  MaterialStateProperty.all<Color>(Colors.red),
