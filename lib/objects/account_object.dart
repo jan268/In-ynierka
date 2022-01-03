@@ -9,7 +9,7 @@ class AccountObject {
   String? firstName;
   String? lastName;
   String? sellerLevel;
-  String? salesCompleted;
+  int? salesCompleted;
   String? paypalEmail;
   String? billingStreet;
   String? billingAddressLine1;
@@ -52,11 +52,13 @@ class AccountObject {
   }
 
   static Future<AccountObject> getAccount() async {
-    String token = UserSecureStorage.getJwt() as String;
+    String? token = await UserSecureStorage.getJwt();
+    print(token);
+    String jwt =  "Bearer " + token!.substring(token.lastIndexOf(':') + 2, token.length-2);
     // make request
-    Response response = await get(Uri.parse("http://netmarket-api.eu-central-1.elasticbeanstalk.com/api/User"),
+    Response response = await get(Uri.parse("http://netmarket-api.eu-central-1.elasticbeanstalk.com/api/user"),
         headers: {
-          "Authorization": token,
+          "Authorization": jwt,
           "accept": "*/*",
           "Content-Type": "application/json"
         });

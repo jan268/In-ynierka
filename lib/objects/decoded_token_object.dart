@@ -12,7 +12,7 @@ class DecodedTokenObject {
   DecodedTokenObject(
       {this.username, this.role, this.email, this.id, this.isExpired});
 
-  static getDecodedToken() async {
+  static Future<DecodedTokenObject> getDecodedToken() async {
     String? token = await UserSecureStorage.getJwt();
     Map<String, dynamic> decodedToken = JwtDecoder.decode(token!);
     return DecodedTokenObject(

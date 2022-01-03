@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:net_market/objects/account_object.dart';
 import 'package:net_market/objects/filter_object.dart';
 import 'package:net_market/pages/search.dart';
 import 'package:net_market/utilities/basic_icons_icons.dart';
@@ -7,7 +8,8 @@ import 'package:net_market/utilities/basic_icons_icons.dart';
 import 'home.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({Key? key}) : super(key: key);
+  final String email;
+  const SettingsPage({Key? key, required this.email}) : super(key: key);
 
   @override
   _SettingsPageState createState() => _SettingsPageState();
@@ -15,14 +17,21 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
 
+  AccountObject accountObject = AccountObject();
   String profileName = "Not provided";
   String emailAddress = "Not provided";
   String paypalEmail = "Not provided";
   String billingAddress = "Not provided";
+  String shippingAddress = "Not provided";
   bool changePasswordButton = false;
 
   @override
   Widget build(BuildContext context) {
+    getEmailAddress();
+    getProfileName();
+    getPaypalEmail();
+    getBillingAddress();
+    getShippingAddress();
     return Scaffold(
         appBar: AppBar(
           title: Text("Settings"),
@@ -91,14 +100,16 @@ class _SettingsPageState extends State<SettingsPage> {
                                     SizedBox(
                                       child: IconButton(
                                         icon: Icon(Icons.edit),
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          profileResetForm();
+                                        },
                                       ),
                                     )
                                   ],
                                 ),
                                 ElevatedButton(
                                     onPressed: () {
-                                        resetForm();
+                                        passwordResetForm();
                                     },
                                     child: Text("Reset Password"),
                                     style: ButtonStyle(
@@ -161,7 +172,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                     SizedBox(
                                       child: IconButton(
                                         icon: Icon(Icons.edit),
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          billingResetForm();
+                                        },
                                       ),
                                     )
                                   ],
@@ -199,7 +212,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                               )
                                           ),
                                           Text(
-                                              billingAddress
+                                              shippingAddress
                                           )
                                         ],
                                       ),
@@ -207,7 +220,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                     SizedBox(
                                       child: IconButton(
                                         icon: Icon(Icons.edit),
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          shippingResetForm();
+                                        },
                                       ),
                                     )
                                   ],
@@ -250,6 +265,52 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  void getProfileName() {
+    if(accountObject.firstName == null || accountObject.lastName == null) {
+        return;
+    }
+    String displayName = accountObject.firstName! + " " + accountObject.lastName!;
+    profileName = displayName;
+  }
+
+  void getEmailAddress() {
+    emailAddress = widget.email;
+  }
+
+  void getPaypalEmail() {
+    if(accountObject.paypalEmail == null) {
+      return;
+    }
+    String displayName = accountObject.paypalEmail!;
+    paypalEmail = displayName;
+  }
+
+  void getBillingAddress() {
+    if(accountObject.billingStreet == null || accountObject.billingAddressLine1 == null
+        || accountObject.billingZipCode == null || accountObject.billingCountry == null) {
+      return;
+    }
+    String displayName = accountObject.billingStreet! + "\n" +
+        accountObject.billingAddressLine1! + "\n" +
+        accountObject.billingAddressLine2! + "\n" +
+        accountObject.billingZipCode! + "\n" +
+        accountObject.billingCountry!;
+    billingAddress = displayName;
+  }
+
+  void getShippingAddress() {
+    if(accountObject.shippingStreet == null || accountObject.shippingAddressLine1 == null
+        || accountObject.shippingZipCode == null || accountObject.shippingCountry == null) {
+      return;
+    }
+    String displayName = accountObject.shippingStreet! + "\n" +
+        accountObject.shippingAddressLine1! + "\n" +
+        accountObject.shippingAddressLine2! + "\n" +
+        accountObject.shippingZipCode! + "\n" +
+        accountObject.shippingCountry!;
+    shippingAddress = displayName;
+  }
+
   void onTabTapped(int index) {
     switch (index) {
       case 0:
@@ -274,7 +335,7 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
-  resetForm() {
+  passwordResetForm() {
     final email = TextEditingController();
     final oldPassword = TextEditingController();
     final newPassword = TextEditingController();
@@ -318,7 +379,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             controller: confirmNewPassword,
                           ),
                         ),
-                        SizedBox(height: 100,),
+                        SizedBox(height: 50,),
                         Row(
                           children: [
                             RaisedButton(
@@ -344,15 +405,244 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  profileResetForm() {
+    final firstName = TextEditingController();
+    final lastName = TextEditingController();
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Stack(
+              children: [
+                Column(
+                  children: [
+                    Align(child: Text("First Name"), alignment: Alignment.centerLeft,),
+                    Container(
+                      decoration: boxDecoration(),
+                      child: TextField(
+                        controller: firstName,
+                      ),
+                    ),
+                    SizedBox(height: 30,),
+                    Align(child: Text("Last Name"), alignment: Alignment.centerLeft,),
+                    Container(
+                      decoration: boxDecoration(),
+                      child: TextField(
+                        controller: lastName,
+                      ),
+                    ),
+                    SizedBox(height: 50,),
+                    Row(
+                      children: [
+                        RaisedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text("Exit"),
+                        ),
+                        RaisedButton(
+                          onPressed: changePasswordButton ? () {
+                            sendRequest();
+                          } : null,
+                          child: Text("Change Password"),
+                        )
+                      ],
+                    )
+                  ],
+                )
+              ],
+            ),
+          );
+        }
+    );
+  }
+
+  billingResetForm() {
+    final paypalEmail = TextEditingController();
+    final street = TextEditingController();
+    final addressLine1 = TextEditingController();
+    final addressLine2 = TextEditingController();
+    final zipCode = TextEditingController();
+    final country = TextEditingController();
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Stack(
+              children: [
+                SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Align(child: Text("Paypal email"), alignment: Alignment.centerLeft,),
+                      Container(
+                        decoration: boxDecoration(),
+                        child: TextField(
+                          controller: paypalEmail,
+                        ),
+                      ),
+                      SizedBox(height: 30,),
+                      Align(child: Text("Street"), alignment: Alignment.centerLeft,),
+                      Container(
+                        decoration: boxDecoration(),
+                        child: TextField(
+                          controller: street,
+                        ),
+                      ),
+                      SizedBox(height: 30,),
+                      Align(child: Text("Address line 1"), alignment: Alignment.centerLeft,),
+                      Container(
+                        decoration: boxDecoration(),
+                        child: TextField(
+                          controller: addressLine1,
+                        ),
+                      ),
+                      SizedBox(height: 30,),
+                      Align(child: Text("Address line 2"), alignment: Alignment.centerLeft,),
+                      Container(
+                        decoration: boxDecoration(),
+                        child: TextField(
+                          controller: addressLine2,
+                        ),
+                      ),
+                      SizedBox(height: 30,),
+                      Align(child: Text("Zip code"), alignment: Alignment.centerLeft,),
+                      Container(
+                        decoration: boxDecoration(),
+                        child: TextField(
+                          controller: zipCode,
+                        ),
+                      ),
+                      SizedBox(height: 30,),
+                      Align(child: Text("Country"), alignment: Alignment.centerLeft,),
+                      Container(
+                        decoration: boxDecoration(),
+                        child: TextField(
+                          controller: country,
+                        ),
+                      ),
+                      SizedBox(height: 50,),
+                      Row(
+                        children: [
+                          RaisedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text("Exit"),
+                          ),
+                          RaisedButton(
+                            onPressed: changePasswordButton ? () {
+                              sendRequest();
+                            } : null,
+                            child: Text("Change Password"),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          );
+        }
+    );
+  }
+
+  shippingResetForm() {
+    final street = TextEditingController();
+    final addressLine1 = TextEditingController();
+    final addressLine2 = TextEditingController();
+    final zipCode = TextEditingController();
+    final country = TextEditingController();
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Stack(
+              children: [
+                Column(
+                  children: [
+                    Align(child: Text("Street"), alignment: Alignment.centerLeft,),
+                    Container(
+                      decoration: boxDecoration(),
+                      child: TextField(
+                        controller: street,
+                      ),
+                    ),
+                    SizedBox(height: 30,),
+                    Align(child: Text("Address line 1"), alignment: Alignment.centerLeft,),
+                    Container(
+                      decoration: boxDecoration(),
+                      child: TextField(
+                        controller: addressLine1,
+                      ),
+                    ),
+                    SizedBox(height: 30,),
+                    Align(child: Text("Address line 2"), alignment: Alignment.centerLeft,),
+                    Container(
+                      decoration: boxDecoration(),
+                      child: TextField(
+                        controller: addressLine2,
+                      ),
+                    ),
+                    SizedBox(height: 30,),
+                    Align(child: Text("Zip code"), alignment: Alignment.centerLeft,),
+                    Container(
+                      decoration: boxDecoration(),
+                      child: TextField(
+                        controller: zipCode,
+                      ),
+                    ),
+                    SizedBox(height: 30,),
+                    Align(child: Text("Country"), alignment: Alignment.centerLeft,),
+                    Container(
+                      decoration: boxDecoration(),
+                      child: TextField(
+                        controller: country,
+                      ),
+                    ),
+                    SizedBox(height: 50,),
+                    Row(
+                      children: [
+                        RaisedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text("Exit"),
+                        ),
+                        RaisedButton(
+                          onPressed: changePasswordButton ? () {
+                            sendRequest();
+                          } : null,
+                          child: Text("Change Password"),
+                        )
+                      ],
+                    )
+                  ],
+                )
+              ],
+            ),
+          );
+        }
+    );
+  }
+
   @override
   void initState() {
     super.initState();
+    getData();
     // email.addListener(() {
     //   final changePassword = email.text.isNotEmpty;
     //   setState(() {
     //     this.changePasswordButton = changePassword;
     //   });
     // });
+  }
+
+  Future<void> getData() async {
+    AccountObject dataFromApi = await AccountObject.getAccount();
+    setState(() {
+      accountObject = dataFromApi;
+    });
   }
 
   sendRequest() {

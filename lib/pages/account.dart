@@ -22,7 +22,8 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-  AccountObject account = AccountObject();
+  String? username;
+  String? email;
   DecodedTokenObject tokenObject = DecodedTokenObject();
 
 
@@ -39,7 +40,10 @@ class _AccountPageState extends State<AccountPage> {
                 child: Container(
                   color: Colors.tealAccent,
                   child: ListTile(
-                    title: Center(child: Text("Jan Witek")), // tu bedzie imie uzytkownika
+                    title: Center(child: Text(
+                        getUserName()
+                    )
+                    ), // tu bedzie imie uzytkownika
                   ),
                 ),
               ),
@@ -111,19 +115,37 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
+  String getUserName() {
+    if(tokenObject.username == null){
+      return "";
+    }
+    return tokenObject.username!;
+  }
+
+  String getEmail() {
+    if(tokenObject.email == null){
+      return "";
+    }
+    return tokenObject.email!;
+  }
+
   Future<dynamic> navigateToProfile(BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
   Future<dynamic> navigateToBids(BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (context) => BidsPage()));
   Future<dynamic> navigateToAsks(BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (context) => AsksPage()));
   Future<dynamic> navigateToTransactions(BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (context) => TransactionsPage()));
-  Future<dynamic> navigateToSettings(BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage()));
+  Future<dynamic> navigateToSettings(BuildContext context) => Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsPage(email: getEmail(),)));
   Future<dynamic> navigateToLogin(BuildContext context) => Navigator.pushNamedAndRemoveUntil(context, "/", (r) => false);
 
   @override
   void initState() {
     super.initState();
+    getDecodedJwt();
+  }
+
+  getDecodedJwt() async {
+    DecodedTokenObject decodedToken = await DecodedTokenObject.getDecodedToken();
     setState(() {
-      // account = AccountObject.getAccount() as AccountObject;
-      // tokenObject = DecodedTokenObject.getDecodedToken();
+      tokenObject = decodedToken;
     });
   }
 
