@@ -47,6 +47,7 @@ class _ItemCardState extends State<ItemCard> {
 
   @override
   Widget build(BuildContext context) {
+    getData(widget.id);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,

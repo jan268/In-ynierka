@@ -1,9 +1,14 @@
 
+import 'dart:convert';
+
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:net_market/objects/account_object.dart';
 import 'package:net_market/objects/filter_object.dart';
 import 'package:net_market/pages/search.dart';
 import 'package:net_market/utilities/basic_icons_icons.dart';
+import 'package:net_market/utilities/user_secure_storage.dart';
 
 import 'home.dart';
 
@@ -24,6 +29,7 @@ class _SettingsPageState extends State<SettingsPage> {
   String billingAddress = "Not provided";
   String shippingAddress = "Not provided";
   bool changePasswordButton = false;
+  bool status = false;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +51,7 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Column(
                 children: [
                   SizedBox(
-                    height: 400,
+                    height: 450,
                     child: ListView(
                       children: [
                         Card(
@@ -337,6 +343,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   passwordResetForm() {
+    print(status);
     final _formKey = GlobalKey<FormState>();
     final email = TextEditingController(text: widget.email);
     final oldPassword = TextEditingController();
@@ -360,6 +367,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Please enter email';
+                                  }
+                                  if(!EmailValidator.validate(value)) {
+                                    return "Address is not valid";
                                   }
                                   return null;
                                 },
@@ -426,18 +436,10 @@ class _SettingsPageState extends State<SettingsPage> {
                                 ),
                                 RaisedButton(
                                   onPressed: () {
-                                    if(_formKey.currentState == null) {
-                                      return;
-                                    }
                                     if (_formKey.currentState!.validate()) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Processing Data')),
-                                      );
+                                      changePasswordRequest(email.text, oldPassword.text, newPassword.text);
                                     }
                                   },
-                                  // onPressed: changePasswordButton ? () {
-                                  //     sendRequest();
-                                  // } : null,
                                   child: Text("Change Password"),
                                 )
                               ],
@@ -451,6 +453,58 @@ class _SettingsPageState extends State<SettingsPage> {
           );
         }
     );
+  }
+
+  redNotification(String text) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.red[700],
+            title: const Text('Oops'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(text),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Ok'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  greenNotification(String text) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.green[400],
+            title: const Text('Yaay'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(text),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Ok'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
 
   bool validateNewPassword(String newPassword) {
@@ -522,9 +576,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             RaisedButton(
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('Processing Data')),
-                                  );
+                                  changeProfileRequest(firstName.text, lastName.text);
                                 }
                               },
                               // onPressed: changePasswordButton ? () {
@@ -570,7 +622,10 @@ class _SettingsPageState extends State<SettingsPage> {
                           child: TextFormField(
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter some text';
+                                return 'Please enter email';
+                              }
+                              if(!EmailValidator.validate(value)) {
+                                return "Address is not valid";
                               }
                               return null;
                             },
@@ -584,7 +639,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           child: TextFormField(
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter some text';
+                                return 'Please enter street';
                               }
                               return null;
                             },
@@ -598,7 +653,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           child: TextFormField(
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter some text';
+                                return 'Please enter address';
                               }
                               return null;
                             },
@@ -618,9 +673,13 @@ class _SettingsPageState extends State<SettingsPage> {
                         Container(
                           decoration: boxDecoration(),
                           child: TextFormField(
+                            keyboardType: TextInputType.number,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter some text';
+                                return 'Please enter zip code';
+                              }
+                              if(validateZipCode(value)) {
+                                return "Zip code does not match regex";
                               }
                               return null;
                             },
@@ -634,7 +693,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           child: TextFormField(
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter some text';
+                                return 'Please enter country';
                               }
                               return null;
                             },
@@ -653,9 +712,9 @@ class _SettingsPageState extends State<SettingsPage> {
                             RaisedButton(
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('Processing Data')),
-                                  );
+                                  changeBillingRequest(paypalEmail.text, street.text,
+                                      addressLine1.text, addressLine2.text,
+                                      zipCode.text, country.text);
                                 }
                               },
                               child: Text("Change Billing Info"),
@@ -697,7 +756,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           child: TextFormField(
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter some text';
+                                return 'Please enter street';
                               }
                               return null;
                             },
@@ -711,7 +770,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           child: TextFormField(
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter some text';
+                                return 'Please enter address';
                               }
                               return null;
                             },
@@ -723,12 +782,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         Container(
                           decoration: boxDecoration(),
                           child: TextFormField(
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter some text';
-                              }
-                              return null;
-                            },
                             controller: addressLine2,
                           ),
                         ),
@@ -737,9 +790,13 @@ class _SettingsPageState extends State<SettingsPage> {
                         Container(
                           decoration: boxDecoration(),
                           child: TextFormField(
+                            keyboardType: TextInputType.number,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter some text';
+                                return 'Please enter zip code';
+                              }
+                              if(validateZipCode(value)) {
+                                return "Zip code does not match regex";
                               }
                               return null;
                             },
@@ -753,7 +810,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           child: TextFormField(
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter some text';
+                                return 'Please enter country';
                               }
                               return null;
                             },
@@ -772,14 +829,11 @@ class _SettingsPageState extends State<SettingsPage> {
                             RaisedButton(
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('Processing Data')),
-                                  );
+                                  changeShippingRequest(street.text,
+                                      addressLine1.text, addressLine2.text,
+                                      zipCode.text, country.text);
                                 }
                               },
-                              // onPressed: changePasswordButton ? () {
-                              //   sendRequest();
-                              // } : null,
                               child: Text("Change Shipping Info"),
                             )
                           ],
@@ -795,6 +849,13 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  bool validateZipCode(String zipCode) {
+    if(zipCode.length == 5) {
+      return false;
+    }
+    return true;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -804,12 +865,163 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> getData() async {
     AccountObject dataFromApi = await AccountObject.getAccount();
     setState(() {
+      if(dataFromApi.firstName == null){
+        dataFromApi.firstName = "";
+      }
+      if(dataFromApi.lastName == null){
+        dataFromApi.lastName = "";
+      }
+      if(dataFromApi.paypalEmail == null){
+        dataFromApi.paypalEmail = "";
+      }
+      if(dataFromApi.billingStreet == null){
+        dataFromApi.billingStreet = "";
+      }
+      if(dataFromApi.billingAddressLine1 == null){
+        dataFromApi.billingAddressLine1 = "";
+      }
+      if(dataFromApi.billingAddressLine2 == null){
+        dataFromApi.billingAddressLine2 = "";
+      }
+      if(dataFromApi.billingZipCode == null){
+        dataFromApi.billingZipCode = "";
+      }
+      if(dataFromApi.billingCountry == null){
+        dataFromApi.billingCountry = "";
+      }
+      if(dataFromApi.shippingStreet == null){
+        dataFromApi.shippingStreet = "";
+      }
+      if(dataFromApi.shippingAddressLine1 == null){
+        dataFromApi.shippingAddressLine1 = "";
+      }
+      if(dataFromApi.shippingAddressLine2 == null){
+        dataFromApi.shippingAddressLine2 = "";
+      }
+      if(dataFromApi.shippingZipCode == null){
+        dataFromApi.shippingZipCode = "";
+      }
+      if(dataFromApi.shippingCountry == null){
+        dataFromApi.shippingCountry = "";
+      }
       accountObject = dataFromApi;
     });
   }
 
-  sendRequest() {
+  Future<void> changeProfileRequest(String firstName, String lastName) async {
+    String? token = await UserSecureStorage.getJwt();
+    String jwt =  "Bearer " + token!.substring(token.lastIndexOf(':') + 2, token.length-2);
+    var body = {
+      "firstName": firstName,
+      "lastName": lastName
+    };
+    var response = await put(Uri.parse(
+        "http://netmarket-api.eu-central-1.elasticbeanstalk.com/api/User"),
+        headers: {
+          "Authorization": jwt,
+          "accept": "*/*",
+          "Content-Type": "application/json"
+        },
+        body: json.encode(body),
+        encoding: Encoding.getByName("utf-8"));
+    if(response.statusCode == 200) {
+      Navigator.pop(context);
+      getData();
+      greenNotification("Successfully made changes");
+    }else {
+      Navigator.pop(context);
+      redNotification(response.body.substring(response.body.lastIndexOf(":")+3, response.body.lastIndexOf("]")-1));
+    }
+  }
 
+  Future<void> changeBillingRequest(String paypalEmail, String billingStreet,
+                              String billingAddressLine1, String billingAddressLine2, String billingZipCode,
+                              String billingCountry) async {
+    String? token = await UserSecureStorage.getJwt();
+    String jwt =  "Bearer " + token!.substring(token.lastIndexOf(':') + 2, token.length-2);
+    var body = {
+      "paypalEmail": paypalEmail,
+      "billingStreet": billingStreet,
+      "billingAddressLine1": billingAddressLine1,
+      "billingAddressLine2": billingAddressLine2,
+      "billingZipCode": billingZipCode,
+      "billingCountry": billingCountry
+    };
+    var response = await put(Uri.parse(
+        "http://netmarket-api.eu-central-1.elasticbeanstalk.com/api/User"),
+        headers: {
+          "Authorization": jwt,
+          "accept": "*/*",
+          "Content-Type": "application/json"
+        },
+        body: json.encode(body),
+        encoding: Encoding.getByName("utf-8"));
+    if(response.statusCode == 200) {
+      Navigator.pop(context);
+      getData();
+      greenNotification("Successfully made changes");
+    }else {
+      Navigator.pop(context);
+      redNotification(response.body.substring(response.body.lastIndexOf(":")+3, response.body.lastIndexOf("]")-1));
+    }
+  }
+
+  Future<void> changeShippingRequest(String shippingStreet, String shippingAddressLine1,
+      String shippingAddressLine2, String shippingZipCode, String shippingCountry) async {
+    String? token = await UserSecureStorage.getJwt();
+    String jwt =  "Bearer " + token!.substring(token.lastIndexOf(':') + 2, token.length-2);
+    var body = {
+      "shippingStreet": shippingStreet,
+      "shippingAddressLine1": shippingAddressLine1,
+      "shippingAddressLine2": shippingAddressLine2,
+      "shippingZipCode": shippingZipCode,
+      "shippingCountry": shippingCountry
+    };
+    var response = await put(Uri.parse(
+        "http://netmarket-api.eu-central-1.elasticbeanstalk.com/api/User"),
+        headers: {
+          "Authorization": jwt,
+          "accept": "*/*",
+          "Content-Type": "application/json"
+        },
+        body: json.encode(body),
+        encoding: Encoding.getByName("utf-8"));
+    if(response.statusCode == 200) {
+      Navigator.pop(context);
+      getData();
+      greenNotification("Successfully made changes");
+    }else {
+      Navigator.pop(context);
+      redNotification(response.body.substring(response.body.lastIndexOf(":")+3, response.body.lastIndexOf("]")-1));
+    }
+  }
+
+  Future<void> changePasswordRequest(String email, String password, String newPassword) async {
+    String? token = await UserSecureStorage.getJwt();
+    String jwt =  "Bearer " + token!.substring(token.lastIndexOf(':') + 2, token.length-2);
+    var body = {
+      "email": email,
+      "password": password,
+      "newPassword": newPassword
+    };
+    var response = await post(Uri.parse(
+        "http://netmarket-api.eu-central-1.elasticbeanstalk.com/api/Identity/resetPassword"),
+        headers: {
+          "Authorization": jwt,
+          "accept": "*/*",
+          "Content-Type": "application/json"
+        },
+        body: json.encode(body),
+        encoding: Encoding.getByName("utf-8"));
+    print(response.body);
+    if(response.statusCode == 200) {
+      Navigator.pop(context);
+      getData();
+      greenNotification("Successfully changed password");
+    }else {
+      Navigator.pop(context);
+      redNotification(response.body.substring(response.body.lastIndexOf(":")+3, response.body.lastIndexOf("]")-1));
+    }
   }
 
   BoxDecoration boxDecoration() {

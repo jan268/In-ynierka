@@ -375,6 +375,7 @@ class _BuyItemState extends State<BuyItem> {
     Response response = await sendRequest();
     if(response.statusCode == 200) {
       placeBidNotification();
+      getData();
     } else {
       failToBuyItemNotification();
     }
@@ -384,6 +385,7 @@ class _BuyItemState extends State<BuyItem> {
     Response response = await sendRequest();
     if(response.statusCode == 200) {
       buyItemNowNotification();
+      getData();
     } else {
       failToBuyItemNotification();
     }
@@ -406,5 +408,12 @@ class _BuyItemState extends State<BuyItem> {
         body: json.encode(body),
         encoding: Encoding.getByName("utf-8"));
     return response;
+  }
+
+  void getData() async {
+    var itemFromApi = await ItemCardObject.getData(widget.itemCardObject.item!.id!);
+    setState(() {
+      item = itemFromApi;
+    });
   }
 }

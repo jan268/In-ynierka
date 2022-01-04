@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
@@ -15,6 +16,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
+  final _formKey = GlobalKey<FormState>();
+  final _formKey2 = GlobalKey<FormState>();
   bool _rememberMe = false;
   final email = TextEditingController();
   final password = TextEditingController();
@@ -32,7 +36,17 @@ class _LoginScreenState extends State<LoginScreen> {
           alignment: Alignment.centerLeft,
           decoration: kBoxDecorationStyle,
           height: 60.0,
-          child: TextField(
+          child: TextFormField(
+            autovalidate: true,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter email';
+              }
+              if(!EmailValidator.validate(email.text)){
+                return "Email is not valid";
+              }
+              return null;
+            },
             controller: email,
             keyboardType: TextInputType.emailAddress,
             style: TextStyle(
@@ -55,6 +69,14 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  bool validateNewPassword(String newPassword) {
+    RegExp regExp = RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@%^&*-]).{8,}");
+    if(regExp.hasMatch(newPassword)) {
+      return false;
+    }
+    return true;
+  }
+
   Widget _buildPasswordTF() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,7 +90,17 @@ class _LoginScreenState extends State<LoginScreen> {
           alignment: Alignment.centerLeft,
           decoration: kBoxDecorationStyle,
           height: 60.0,
-          child: TextField(
+          child: TextFormField(
+            autovalidate: true,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter password';
+              }
+              if(validateNewPassword(value)){
+                return "Password is too weak";
+              }
+              return null;
+            },
             controller: password,
             obscureText: true,
             style: TextStyle(
@@ -119,24 +151,33 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> loginAction() async {
-    var body = {
-      "email": "${email.text}",
-      "password": "${password.text}"
-    };
-    var response = await post(Uri.parse("http://netmarket-api.eu-central-1.elasticbeanstalk.com/api/Identity/login"),
-        headers: {
-          "accept": "*/*",
-          "Content-Type": "application/json"
-        },
-        body: json.encode(body),
-        encoding: Encoding.getByName("utf-8"));
-    if(response.statusCode == 200) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => Home(category: 'SNEAKERS',)));
+    if (_formKey.currentState!.validate()) {
+      var body = {
+        "email": "${email.text}",
+        "password": "${password.text}"
+      };
+      var response = await post(Uri.parse(
+          "http://netmarket-api.eu-central-1.elasticbeanstalk.com/api/Identity/login"),
+          headers: {
+            "accept": "*/*",
+            "Content-Type": "application/json"
+          },
+          body: json.encode(body),
+          encoding: Encoding.getByName("utf-8"));
+      if (response.statusCode == 200) {
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => Home(category: 'SNEAKERS',)));
         print(response.body);
-        String token = response.body.substring(response.body.lastIndexOf(':') + 2, response.body.length-2);
+        String token = response.body.substring(
+            response.body.lastIndexOf(':') + 2, response.body.length - 2);
         print(token);
         await UserSecureStorage.setJwt(response.body);
-    } // tu trzeba zrobic obsluge tego, ze sie nie udalo zalogowac
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Oops wrong password or email')),
+        );
+      }
+    }
   }
 
   Widget _buildLoginBtn() {
@@ -159,30 +200,6 @@ class _LoginScreenState extends State<LoginScreen> {
             fontSize: 18.0,
             fontWeight: FontWeight.bold,
             fontFamily: 'OpenSans',
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSocialBtn(Function onTap, AssetImage logo) {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        height: 60.0,
-        width: 60.0,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              offset: Offset(0, 2),
-              blurRadius: 6.0,
-            ),
-          ],
-          image: DecorationImage(
-            image: logo,
           ),
         ),
       ),
@@ -252,29 +269,32 @@ class _LoginScreenState extends State<LoginScreen> {
                     horizontal: 40.0,
                     vertical: 120.0,
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        'Log In',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'OpenSans',
-                          fontSize: 30.0,
-                          fontWeight: FontWeight.bold,
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Log In',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'OpenSans',
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 30.0),
-                      _buildEmailTF(),
-                      SizedBox(
-                        height: 30.0,
-                      ),
-                      _buildPasswordTF(),
-                      SizedBox(height: 30.0),
-                      _buildRememberMeCheckbox(),
-                      _buildLoginBtn(),
-                      _buildSignupBtn(),
-                    ],
+                        SizedBox(height: 30.0),
+                        _buildEmailTF(),
+                        SizedBox(
+                          height: 30.0,
+                        ),
+                        _buildPasswordTF(),
+                        SizedBox(height: 30.0),
+                        _buildRememberMeCheckbox(),
+                        _buildLoginBtn(),
+                        _buildSignupBtn(),
+                      ],
+                    ),
                   ),
                 ),
               )

@@ -6,21 +6,21 @@ import 'package:net_market/utilities/user_secure_storage.dart';
 class AccountObject {
   String? id;
   String? userId;
-  String? firstName;
-  String? lastName;
+  String? firstName = "";
+  String? lastName = "";
   String? sellerLevel;
   int? salesCompleted;
-  String? paypalEmail;
-  String? billingStreet;
-  String? billingAddressLine1;
-  String? billingAddressLine2;
-  String? billingZipCode;
-  String? billingCountry;
-  String? shippingStreet;
-  String? shippingAddressLine1;
-  String? shippingAddressLine2;
-  String? shippingZipCode;
-  String? shippingCountry;
+  String? paypalEmail = "";
+  String? billingStreet = "";
+  String? billingAddressLine1 = "";
+  String? billingAddressLine2 = "";
+  String? billingZipCode = "";
+  String? billingCountry = "";
+  String? shippingStreet = "";
+  String? shippingAddressLine1 = "";
+  String? shippingAddressLine2 = "";
+  String? shippingZipCode = "";
+  String? shippingCountry = "";
 
   AccountObject({this.id, this.userId, this.firstName, this.lastName,
     this.sellerLevel, this.salesCompleted, this.paypalEmail,

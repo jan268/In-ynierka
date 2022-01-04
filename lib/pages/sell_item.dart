@@ -363,6 +363,7 @@ class _SellItemState extends State<SellItem> {
     Response response = await sendRequest();
     if(response.statusCode == 200) {
       placeAskNotification();
+      getData();
     } else {
       failToSellItemNotification();
     }
@@ -372,6 +373,7 @@ class _SellItemState extends State<SellItem> {
     Response response = await sendRequest();
     if(response.statusCode == 200) {
       sellItemNowNotification();
+      getData();
     } else {
       print(response.body);
       failToSellItemNotification();
@@ -401,6 +403,13 @@ class _SellItemState extends State<SellItem> {
     print(response.statusCode);
     print(response.body);
     return response;
+  }
+
+  void getData() async {
+    var itemFromApi = await ItemCardObject.getData(widget.itemCardObject.item!.id!);
+    setState(() {
+      item = itemFromApi;
+    });
   }
 
   @override
