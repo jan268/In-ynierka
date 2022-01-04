@@ -20,6 +20,7 @@ class _AsksPageState extends State<AsksPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text("Asks"),
           backgroundColor: Colors.tealAccent,

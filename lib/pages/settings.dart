@@ -33,6 +33,7 @@ class _SettingsPageState extends State<SettingsPage> {
     getBillingAddress();
     getShippingAddress();
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text("Settings"),
           backgroundColor: Colors.tealAccent,
@@ -336,7 +337,8 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   passwordResetForm() {
-    final email = TextEditingController();
+    final _formKey = GlobalKey<FormState>();
+    final email = TextEditingController(text: widget.email);
     final oldPassword = TextEditingController();
     final newPassword = TextEditingController();
     final confirmNewPassword = TextEditingController();
@@ -346,37 +348,166 @@ class _SettingsPageState extends State<SettingsPage> {
           return AlertDialog(
               content: Stack(
                 children: [
-                    Column(
+                    SingleChildScrollView(
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            Align(child: Text("Email"), alignment: Alignment.centerLeft,),
+                            Container(
+                              decoration: boxDecoration(),
+                              child: TextFormField(
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter email';
+                                  }
+                                  return null;
+                                },
+                                controller: email,
+                              ),
+                            ),
+                            SizedBox(height: 30,),
+                            Align(child: Text("Old Password"), alignment: Alignment.centerLeft,),
+                            Container(
+                              decoration: boxDecoration(),
+                              child: TextFormField(
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter old password';
+                                  }
+                                  return null;
+                                },
+                                controller: oldPassword,
+                              ),
+                            ),
+                            SizedBox(height: 30,),
+                            Align(child: Text("New Password"), alignment: Alignment.centerLeft,),
+                            Container(
+                              decoration: boxDecoration(),
+                              child: TextFormField(
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter new password';
+                                  }
+                                  if (validateNewPassword(value)) {
+                                    return 'Password is Too Weak';
+                                  }
+                                  return null;
+                                },
+                                controller: newPassword,
+                              ),
+                            ),
+                            SizedBox(height: 30,),
+                            Align(child: Text("Confirm New Password"), alignment: Alignment.centerLeft,),
+                            Container(
+                              decoration: boxDecoration(),
+                              child: TextFormField(
+                                validator: (value) {
+                                  print(value);
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter new password again';
+                                  }
+                                  if (validateConfirmNewPassword(value, newPassword.text)) {
+                                    return 'Wrong password';
+                                  }
+                                  return null;
+                                },
+                                controller: confirmNewPassword,
+                              ),
+                            ),
+                            SizedBox(height: 50,),
+                            Row(
+                              children: [
+                                RaisedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text("Exit"),
+                                ),
+                                RaisedButton(
+                                  onPressed: () {
+                                    if(_formKey.currentState == null) {
+                                      return;
+                                    }
+                                    if (_formKey.currentState!.validate()) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Processing Data')),
+                                      );
+                                    }
+                                  },
+                                  // onPressed: changePasswordButton ? () {
+                                  //     sendRequest();
+                                  // } : null,
+                                  child: Text("Change Password"),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    )
+                ],
+              ),
+          );
+        }
+    );
+  }
+
+  bool validateNewPassword(String newPassword) {
+    RegExp regExp = RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@%^&*-]).{8,}");
+      if(regExp.hasMatch(newPassword)) {
+        return false;
+      }
+      return true;
+  }
+
+  bool validateConfirmNewPassword(String confirmNewPassword, String newPassword) {
+    if(confirmNewPassword == newPassword) {
+      return false;
+    }
+    return true;
+  }
+
+  profileResetForm() {
+    final _formKey = GlobalKey<FormState>();
+    final firstName = TextEditingController(text: accountObject.firstName);
+    final lastName = TextEditingController(text: accountObject.lastName);
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Stack(
+              children: [
+                SingleChildScrollView(
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
                       children: [
-                        Align(child: Text("Email"), alignment: Alignment.centerLeft,),
+                        Align(child: Text("First Name"), alignment: Alignment.centerLeft,),
                         Container(
                           decoration: boxDecoration(),
-                          child: TextField(
-                            controller: email,
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter first name';
+                              }
+                              return null;
+                            },
+                            controller: firstName,
                           ),
                         ),
                         SizedBox(height: 30,),
-                        Align(child: Text("Old Password"), alignment: Alignment.centerLeft,),
+                        Align(child: Text("Last Name"), alignment: Alignment.centerLeft,),
                         Container(
                           decoration: boxDecoration(),
-                          child: TextField(
-                            controller: oldPassword,
-                          ),
-                        ),
-                        SizedBox(height: 30,),
-                        Align(child: Text("New Password"), alignment: Alignment.centerLeft,),
-                        Container(
-                          decoration: boxDecoration(),
-                          child: TextField(
-                            controller: newPassword,
-                          ),
-                        ),
-                        SizedBox(height: 30,),
-                        Align(child: Text("Confirm New Password"), alignment: Alignment.centerLeft,),
-                        Container(
-                          decoration: boxDecoration(),
-                          child: TextField(
-                            controller: confirmNewPassword,
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter last name';
+                              }
+                              return null;
+                            },
+                            controller: lastName,
                           ),
                         ),
                         SizedBox(height: 50,),
@@ -389,66 +520,23 @@ class _SettingsPageState extends State<SettingsPage> {
                               child: Text("Exit"),
                             ),
                             RaisedButton(
-                              onPressed: changePasswordButton ? () {
-                                  sendRequest();
-                              } : null,
-                              child: Text("Change Password"),
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Processing Data')),
+                                  );
+                                }
+                              },
+                              // onPressed: changePasswordButton ? () {
+                              //   sendRequest();
+                              // } : null,
+                              child: Text("Change Profile Info"),
                             )
                           ],
                         )
                       ],
-                    )
-                ],
-              ),
-          );
-        }
-    );
-  }
-
-  profileResetForm() {
-    final firstName = TextEditingController();
-    final lastName = TextEditingController();
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: Stack(
-              children: [
-                Column(
-                  children: [
-                    Align(child: Text("First Name"), alignment: Alignment.centerLeft,),
-                    Container(
-                      decoration: boxDecoration(),
-                      child: TextField(
-                        controller: firstName,
-                      ),
                     ),
-                    SizedBox(height: 30,),
-                    Align(child: Text("Last Name"), alignment: Alignment.centerLeft,),
-                    Container(
-                      decoration: boxDecoration(),
-                      child: TextField(
-                        controller: lastName,
-                      ),
-                    ),
-                    SizedBox(height: 50,),
-                    Row(
-                      children: [
-                        RaisedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text("Exit"),
-                        ),
-                        RaisedButton(
-                          onPressed: changePasswordButton ? () {
-                            sendRequest();
-                          } : null,
-                          child: Text("Change Password"),
-                        )
-                      ],
-                    )
-                  ],
+                  ),
                 )
               ],
             ),
@@ -458,12 +546,13 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   billingResetForm() {
-    final paypalEmail = TextEditingController();
-    final street = TextEditingController();
-    final addressLine1 = TextEditingController();
-    final addressLine2 = TextEditingController();
-    final zipCode = TextEditingController();
-    final country = TextEditingController();
+    final _formKey = GlobalKey<FormState>();
+    final paypalEmail = TextEditingController(text: accountObject.paypalEmail);
+    final street = TextEditingController(text: accountObject.billingStreet);
+    final addressLine1 = TextEditingController(text: accountObject.billingAddressLine1);
+    final addressLine2 = TextEditingController(text: accountObject.billingAddressLine2);
+    final zipCode = TextEditingController(text: accountObject.billingZipCode);
+    final country = TextEditingController(text: accountObject.billingCountry);
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -471,73 +560,110 @@ class _SettingsPageState extends State<SettingsPage> {
             content: Stack(
               children: [
                 SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Align(child: Text("Paypal email"), alignment: Alignment.centerLeft,),
-                      Container(
-                        decoration: boxDecoration(),
-                        child: TextField(
-                          controller: paypalEmail,
-                        ),
-                      ),
-                      SizedBox(height: 30,),
-                      Align(child: Text("Street"), alignment: Alignment.centerLeft,),
-                      Container(
-                        decoration: boxDecoration(),
-                        child: TextField(
-                          controller: street,
-                        ),
-                      ),
-                      SizedBox(height: 30,),
-                      Align(child: Text("Address line 1"), alignment: Alignment.centerLeft,),
-                      Container(
-                        decoration: boxDecoration(),
-                        child: TextField(
-                          controller: addressLine1,
-                        ),
-                      ),
-                      SizedBox(height: 30,),
-                      Align(child: Text("Address line 2"), alignment: Alignment.centerLeft,),
-                      Container(
-                        decoration: boxDecoration(),
-                        child: TextField(
-                          controller: addressLine2,
-                        ),
-                      ),
-                      SizedBox(height: 30,),
-                      Align(child: Text("Zip code"), alignment: Alignment.centerLeft,),
-                      Container(
-                        decoration: boxDecoration(),
-                        child: TextField(
-                          controller: zipCode,
-                        ),
-                      ),
-                      SizedBox(height: 30,),
-                      Align(child: Text("Country"), alignment: Alignment.centerLeft,),
-                      Container(
-                        decoration: boxDecoration(),
-                        child: TextField(
-                          controller: country,
-                        ),
-                      ),
-                      SizedBox(height: 50,),
-                      Row(
-                        children: [
-                          RaisedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        Align(child: Text("Paypal email"), alignment: Alignment.centerLeft,),
+                        Container(
+                          decoration: boxDecoration(),
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
                             },
-                            child: Text("Exit"),
+                            controller: paypalEmail,
                           ),
-                          RaisedButton(
-                            onPressed: changePasswordButton ? () {
-                              sendRequest();
-                            } : null,
-                            child: Text("Change Password"),
-                          )
-                        ],
-                      )
-                    ],
+                        ),
+                        SizedBox(height: 30,),
+                        Align(child: Text("Street"), alignment: Alignment.centerLeft,),
+                        Container(
+                          decoration: boxDecoration(),
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
+                            controller: street,
+                          ),
+                        ),
+                        SizedBox(height: 30,),
+                        Align(child: Text("Address line 1"), alignment: Alignment.centerLeft,),
+                        Container(
+                          decoration: boxDecoration(),
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
+                            controller: addressLine1,
+                          ),
+                        ),
+                        SizedBox(height: 30,),
+                        Align(child: Text("Address line 2"), alignment: Alignment.centerLeft,),
+                        Container(
+                          decoration: boxDecoration(),
+                          child: TextField(
+                            controller: addressLine2,
+                          ),
+                        ),
+                        SizedBox(height: 30,),
+                        Align(child: Text("Zip code"), alignment: Alignment.centerLeft,),
+                        Container(
+                          decoration: boxDecoration(),
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
+                            controller: zipCode,
+                          ),
+                        ),
+                        SizedBox(height: 30,),
+                        Align(child: Text("Country"), alignment: Alignment.centerLeft,),
+                        Container(
+                          decoration: boxDecoration(),
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
+                            controller: country,
+                          ),
+                        ),
+                        SizedBox(height: 50,),
+                        Row(
+                          children: [
+                            RaisedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text("Exit"),
+                            ),
+                            RaisedButton(
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Processing Data')),
+                                  );
+                                }
+                              },
+                              child: Text("Change Billing Info"),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 )
               ],
@@ -548,76 +674,119 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   shippingResetForm() {
-    final street = TextEditingController();
-    final addressLine1 = TextEditingController();
-    final addressLine2 = TextEditingController();
-    final zipCode = TextEditingController();
-    final country = TextEditingController();
+    final _formKey = GlobalKey<FormState>();
+    final street = TextEditingController(text: accountObject.shippingStreet);
+    final addressLine1 = TextEditingController(text: accountObject.shippingAddressLine1);
+    final addressLine2 = TextEditingController(text: accountObject.shippingAddressLine2);
+    final zipCode = TextEditingController(text: accountObject.shippingZipCode);
+    final country = TextEditingController(text: accountObject.shippingCountry);
     return showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             content: Stack(
               children: [
-                Column(
-                  children: [
-                    Align(child: Text("Street"), alignment: Alignment.centerLeft,),
-                    Container(
-                      decoration: boxDecoration(),
-                      child: TextField(
-                        controller: street,
-                      ),
-                    ),
-                    SizedBox(height: 30,),
-                    Align(child: Text("Address line 1"), alignment: Alignment.centerLeft,),
-                    Container(
-                      decoration: boxDecoration(),
-                      child: TextField(
-                        controller: addressLine1,
-                      ),
-                    ),
-                    SizedBox(height: 30,),
-                    Align(child: Text("Address line 2"), alignment: Alignment.centerLeft,),
-                    Container(
-                      decoration: boxDecoration(),
-                      child: TextField(
-                        controller: addressLine2,
-                      ),
-                    ),
-                    SizedBox(height: 30,),
-                    Align(child: Text("Zip code"), alignment: Alignment.centerLeft,),
-                    Container(
-                      decoration: boxDecoration(),
-                      child: TextField(
-                        controller: zipCode,
-                      ),
-                    ),
-                    SizedBox(height: 30,),
-                    Align(child: Text("Country"), alignment: Alignment.centerLeft,),
-                    Container(
-                      decoration: boxDecoration(),
-                      child: TextField(
-                        controller: country,
-                      ),
-                    ),
-                    SizedBox(height: 50,),
-                    Row(
+                SingleChildScrollView(
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
                       children: [
-                        RaisedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text("Exit"),
+                        Align(child: Text("Street"), alignment: Alignment.centerLeft,),
+                        Container(
+                          decoration: boxDecoration(),
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
+                            controller: street,
+                          ),
                         ),
-                        RaisedButton(
-                          onPressed: changePasswordButton ? () {
-                            sendRequest();
-                          } : null,
-                          child: Text("Change Password"),
+                        SizedBox(height: 30,),
+                        Align(child: Text("Address line 1"), alignment: Alignment.centerLeft,),
+                        Container(
+                          decoration: boxDecoration(),
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
+                            controller: addressLine1,
+                          ),
+                        ),
+                        SizedBox(height: 30,),
+                        Align(child: Text("Address line 2"), alignment: Alignment.centerLeft,),
+                        Container(
+                          decoration: boxDecoration(),
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
+                            controller: addressLine2,
+                          ),
+                        ),
+                        SizedBox(height: 30,),
+                        Align(child: Text("Zip code"), alignment: Alignment.centerLeft,),
+                        Container(
+                          decoration: boxDecoration(),
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
+                            controller: zipCode,
+                          ),
+                        ),
+                        SizedBox(height: 30,),
+                        Align(child: Text("Country"), alignment: Alignment.centerLeft,),
+                        Container(
+                          decoration: boxDecoration(),
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
+                            controller: country,
+                          ),
+                        ),
+                        SizedBox(height: 50,),
+                        Row(
+                          children: [
+                            RaisedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text("Exit"),
+                            ),
+                            RaisedButton(
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Processing Data')),
+                                  );
+                                }
+                              },
+                              // onPressed: changePasswordButton ? () {
+                              //   sendRequest();
+                              // } : null,
+                              child: Text("Change Shipping Info"),
+                            )
+                          ],
                         )
                       ],
-                    )
-                  ],
+                    ),
+                  ),
                 )
               ],
             ),
@@ -630,12 +799,6 @@ class _SettingsPageState extends State<SettingsPage> {
   void initState() {
     super.initState();
     getData();
-    // email.addListener(() {
-    //   final changePassword = email.text.isNotEmpty;
-    //   setState(() {
-    //     this.changePasswordButton = changePassword;
-    //   });
-    // });
   }
 
   Future<void> getData() async {

@@ -53,7 +53,6 @@ class AccountObject {
 
   static Future<AccountObject> getAccount() async {
     String? token = await UserSecureStorage.getJwt();
-    print(token);
     String jwt =  "Bearer " + token!.substring(token.lastIndexOf(':') + 2, token.length-2);
     // make request
     Response response = await get(Uri.parse("http://netmarket-api.eu-central-1.elasticbeanstalk.com/api/user"),
