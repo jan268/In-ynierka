@@ -167,10 +167,6 @@ class _LoginScreenState extends State<LoginScreen> {
       if (response.statusCode == 200) {
         Navigator.push(context, MaterialPageRoute(
             builder: (context) => Home(category: 'SNEAKERS',)));
-        print(response.body);
-        String token = response.body.substring(
-            response.body.lastIndexOf(':') + 2, response.body.length - 2);
-        print(token);
         await UserSecureStorage.setJwt(response.body);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(

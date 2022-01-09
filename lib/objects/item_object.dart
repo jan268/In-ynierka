@@ -12,6 +12,7 @@ class ItemObject {
   String? name;
   String? category;
   String? model;
+  String? make;
   String? gender;
   double? retailPrice;
   String? description;
@@ -27,6 +28,7 @@ class ItemObject {
       this.name,
       this.category,
       this.model,
+      this.make,
       this.gender,
       this.retailPrice,
       this.description,
@@ -90,6 +92,7 @@ class ItemObject {
         name: json["name"],
         category: json["category"],
         model: json["model"],
+        make: json["make"],
         gender: json["gender"],
         retailPrice: json["retailPrice"],
         description: json["description"],

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:net_market/mocks/mocked_lists.dart';
 import 'package:net_market/objects/item_card_object.dart';
 import 'package:net_market/objects/item_object.dart';
@@ -53,24 +54,74 @@ class _ItemCardState extends State<ItemCard> {
       backgroundColor: Colors.white,
       body: Container(
         child: SafeArea(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 70,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    SizedBox(height: 64, width: 80, child: getSizeWidget()),
-                    SizedBox(
-                      height: 70,
-                      width: 120,
-                      child: Column(
-                        children: [
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 70,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SizedBox(height: 64, width: 80, child: getSizeWidget()),
+                      SizedBox(
+                        height: 70,
+                        width: 120,
+                        child: Column(
+                          children: [
+                            ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.green),
+                                ),
+                                onPressed: () {
+                                  if(streetwearNoSize() || sneakersNoSize()) {
+                                    if(widget.category == "SNEAKERS") {
+                                      shoesSizePopUp();
+                                    } else clothesSizePopUp();
+                                  } else {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => BuyItem(
+                                                  itemCardObject: itemCardObject,
+                                                  size: size!,
+                                                )));
+                                  }
+                                },
+                                child: Container(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      SizedBox(
+                                          width: 40,
+                                          child:
+                                              Text(getLowestAsk(itemCardObject))),
+                                      SizedBox(
+                                          width: 40,
+                                          child: Text(
+                                            "Buy",
+                                            style: TextStyle(fontSize: 20),
+                                          )),
+                                    ],
+                                  ),
+                                )),
+                            // TextButton(
+                            //   onPressed: () {},
+                            //   child: Text("View All Asks"),
+                            // ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 70,
+                        width: 120,
+                        child: Column(children: [
                           ElevatedButton(
                               style: ButtonStyle(
                                 backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Colors.green),
+                                    MaterialStateProperty.all<Color>(Colors.red),
                               ),
                               onPressed: () {
                                 if(streetwearNoSize() || sneakersNoSize()) {
@@ -81,10 +132,10 @@ class _ItemCardState extends State<ItemCard> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => BuyItem(
-                                                itemCardObject: itemCardObject,
-                                                size: size!,
-                                              )));
+                                          builder: (context) => SellItem(
+                                            itemCardObject: itemCardObject,
+                                            size: size!,
+                                          )));
                                 }
                               },
                               child: Container(
@@ -93,91 +144,103 @@ class _ItemCardState extends State<ItemCard> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     SizedBox(
-                                        width: 40,
                                         child:
-                                            Text(getLowestAsk(itemCardObject))),
+                                            Text(getHighestBid(itemCardObject))),
                                     SizedBox(
-                                        width: 40,
                                         child: Text(
-                                          "Buy",
-                                          style: TextStyle(fontSize: 20),
-                                        )),
+                                      "Sell",
+                                      style: TextStyle(fontSize: 20),
+                                    )),
                                   ],
                                 ),
                               )),
                           // TextButton(
                           //   onPressed: () {},
-                          //   child: Text("View All Asks"),
+                          //   child: Text("View All Bids"),
                           // ),
-                        ],
+                        ]),
                       ),
-                    ),
-                    SizedBox(
-                      height: 70,
-                      width: 120,
-                      child: Column(children: [
-                        ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all<Color>(Colors.red),
-                            ),
-                            onPressed: () {
-                              if(streetwearNoSize() || sneakersNoSize()) {
-                                if(widget.category == "SNEAKERS") {
-                                  shoesSizePopUp();
-                                } else clothesSizePopUp();
-                              } else {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => SellItem(
-                                          itemCardObject: itemCardObject,
-                                          size: size!,
-                                        )));
-                              }
-                            },
-                            child: Container(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  SizedBox(
-                                      child:
-                                          Text(getHighestBid(itemCardObject))),
-                                  SizedBox(
-                                      child: Text(
-                                    "Sell",
-                                    style: TextStyle(fontSize: 20),
-                                  )),
-                                ],
-                              ),
-                            )),
-                        // TextButton(
-                        //   onPressed: () {},
-                        //   child: Text("View All Bids"),
-                        // ),
-                      ]),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Divider(),
-              SizedBox(
-                  height: 400,
-                  child:
-                      Image.network(itemCardObject.item!.thumbUrl as String)),
-              SizedBox(
-                height: 70,
-                child: Text(
-                  itemCardObject.item!.name as String,
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                ), //item.name
-              )
-            ],
+                Divider(),
+                SizedBox(
+                    height: 400,
+                    child:
+                        Image.network(itemCardObject.item!.thumbUrl as String)),
+                SizedBox(
+                  height: 70,
+                  child: Text(
+                    itemCardObject.item!.name as String,
+                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                  ), //item.name
+                ),
+                Divider(),
+                Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          children: [
+                            Text(
+                              "Model:",
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.left,
+                            ),
+                            Text(
+                              "Make:",
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.left
+                            ),
+                            Text(
+                              "Retail Price:",
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.left
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Text(
+                              "${itemCardObject.item!.model}",
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            Text(
+                              "${itemCardObject.item!.make}",
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            Text(
+                              "${itemCardObject.item!.retailPrice}",
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    Divider(),
+                    Center(
+                      child: Text(
+                        getDescription(),
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  String getDescription() {
+    String description = itemCardObject.item!.description as String;
+    if(description.isEmpty) {
+      return "No description";
+    }
+    return description;
   }
 
   bool streetwearNoSize() => size == "None" && widget.category == "STREETWEAR";

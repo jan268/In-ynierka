@@ -52,8 +52,7 @@ class AccountObject {
   }
 
   static Future<AccountObject> getAccount() async {
-    String? token = await UserSecureStorage.getJwt();
-    String jwt =  "Bearer " + token!.substring(token.lastIndexOf(':') + 2, token.length-2);
+    String jwt = await getJwtToken();
     // make request
     Response response = await get(Uri.parse("http://netmarket-api.eu-central-1.elasticbeanstalk.com/api/user"),
         headers: {
@@ -63,5 +62,11 @@ class AccountObject {
         });
     var json = jsonDecode(response.body);
     return AccountObject.fromJson(json);
+  }
+
+  static Future<String> getJwtToken() async {
+    String? token = await UserSecureStorage.getJwt();
+    String jwt =  "Bearer " + token!.substring(token.lastIndexOf(':') + 2, token.length-2);
+    return jwt;
   }
 }
