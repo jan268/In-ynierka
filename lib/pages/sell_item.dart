@@ -193,7 +193,7 @@ class _SellItemState extends State<SellItem> {
   }
 
   RaisedButton createActionButton() {
-    if(totalString.isEmpty || totalString == '' || totalString == "--") {
+    if(myController.text.isEmpty) {
       return RaisedButton(
         onPressed: () {},
         child: Text("Next"),

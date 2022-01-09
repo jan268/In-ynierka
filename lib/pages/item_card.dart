@@ -211,7 +211,7 @@ class _ItemCardState extends State<ItemCard> {
                               style: TextStyle(fontSize: 20),
                             ),
                             Text(
-                              "${itemCardObject.item!.retailPrice}",
+                              "${itemCardObject.item!.retailPrice} \$",
                               style: TextStyle(fontSize: 20),
                             ),
                           ],

@@ -197,7 +197,7 @@ class _BuyItemState extends State<BuyItem> {
   }
 
   RaisedButton createActionButton() {
-    if(totalString.isEmpty || totalString == '' || totalString == "--") {
+    if (myController.text.isEmpty) {
       return RaisedButton(
         onPressed: () {},
         child: Text("Next"),
@@ -397,7 +397,7 @@ class _BuyItemState extends State<BuyItem> {
     var body = {
       "itemId": item.item!.id,
       "size": widget.size,
-      "price": myController.text
+      "price": getTotalPrice()
     };
     var response = await post(Uri.parse("http://netmarket-api.eu-central-1.elasticbeanstalk.com/api/bids"),
         headers: {
