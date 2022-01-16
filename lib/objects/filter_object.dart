@@ -14,5 +14,7 @@ class FilterObject {
 
   FilterObject.category(this.category);
 
+  FilterObject.brand(this.category, this.brand);
+
   FilterObject();
 }

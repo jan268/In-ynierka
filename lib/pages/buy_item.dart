@@ -236,7 +236,7 @@ class _BuyItemState extends State<BuyItem> {
       return "";
     }
     double value = double.parse(myController.text);
-    double fee = (value * 0.1);
+    double fee = (value * getFeePercentage());
     setState(() {
       feeValue = fee;
     });
@@ -245,6 +245,10 @@ class _BuyItemState extends State<BuyItem> {
       return fee.toString();
     }
     return fee.toString().substring(0, lastIndexOf + 3);
+  }
+
+  double getFeePercentage () {
+    return 0.1;
   }
 
   String getLowestAsk(ItemObject item) {

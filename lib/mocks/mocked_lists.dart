@@ -7,6 +7,10 @@ import 'package:net_market/utilities/basic_icons_icons.dart';
 class MockedLists {
 
   List<String> categories = ['SNEAKERS', 'STREETWEAR', 'COLLECTIBLES', 'ELECTRONICS'];
+  List<String> shoeBrands = ['Adidas', 'Jordan', 'Nike', 'Yeezy'];
+  List<String> clothesBrands = ['Adidas', 'OFF-WHITE', 'Nike', 'BAPE'];
+  List<String> collectiblesBrands = ['KAWS', 'Hot Wheels', 'Dior', 'LEGO'];
+  List<String> electronicsBrands = ['Apple', 'Microsoft', 'Sony', 'Nintendo'];
 
   List<String> clothesSize = ['ONESIZE', 'S', 'M', 'L', 'XL'];
   List<String> shoesSize = ['4', '4.5', '5', '5.5', '6', '6.5', '7', '7.5', '8', '8.5', '9', '9.5', '10', '10.5', '11', '11.5', '12', '12.5', '13', '13.5', '14'];

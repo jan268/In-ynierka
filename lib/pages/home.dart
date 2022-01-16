@@ -16,7 +16,21 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   get categories => MockedLists().categories;
-  get brands => MockedLists().brands;
+  get brands => getBrands();
+
+  List<String> getBrands() {
+    var category = widget.category;
+    if(category == "SNEAKERS"){
+      return MockedLists().shoeBrands;
+    } else if(category == "STREETWEAR") {
+      return MockedLists().clothesBrands;
+    } else if(category == "COLLECTIBLES") {
+      return MockedLists().collectiblesBrands;
+    } else if(category == "ELECTRONICS") {
+      return MockedLists().electronicsBrands;
+    }
+    return MockedLists().shoeBrands;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +90,20 @@ class _HomeState extends State<Home> {
                       scrollDirection: Axis.horizontal,
                       itemCount: brands.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return brands.elementAt(index);
+                        return SizedBox(
+                          width: 120,
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                                  SearchPage(category: widget.category,
+                                    filters: FilterObject.brand(widget.category, brands[index]),)));
+                            },
+                            child: Text(
+                              brands[index],
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ),
+                        );
                       }, separatorBuilder: (BuildContext context, int index) {
                         return Container(color: Colors.white ,child: SizedBox(width: 20));
                     },
